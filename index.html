@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agência m2a - Marketing 360° especializada em gestão de redes sociais, design gráfico, desenvolvimento web, SEO e marketing digital em Araraquara-SP">
+    <meta name="keywords" content="marketing digital, design gráfico, desenvolvimento web, SEO, gestão de redes sociais, agência de marketing, Araraquara">
+    <meta name="author" content="Agência m2a">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://agenciam2a.com.br/">
+    <meta property="og:title" content="Agência m2a | Marketing Digital 360°">
+    <meta property="og:description" content="Conectamos pessoas ao seu negócio com estratégias digitais inovadoras e eficientes. Conheça nossas soluções em Marketing Digital.">
+    <meta property="og:image" content="https://agenciam2a.com.br/assets/img/og-image.jpg">
+
+    <!-- Google Fonts - Lato -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <title>Agência m2a | Marketing Digital 360° em Araraquara</title>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <div class="logo-animacao">
+            <img src="assets/img/logo-m2a.webp" alt="Logo Agência m2a" width="150" height="42">
+        </div>
+    </div>
+
+    <!-- Barra de Carregamento -->
+    <div id="barra-carregamento-container">
+        <div id="barra-carregamento"></div>
+    </div>
+
+    <!-- Modal de Consentimento LGPD -->
+    <div id="lgpd-modal" class="lgpd-modal">
+        <div class="lgpd-modal-conteudo">
+        <h2>Política de Privacidade e Cookies</h2>
+        <div class="lgpd-texto">
+            <p>Utilizamos cookies e tecnologias semelhantes para melhorar sua experiência em nosso site, personalizar conteúdo, fornecer recursos de mídia social e analisar nosso tráfego.</p>
+            <p>Ao clicar em "Aceitar", você concorda com o uso de cookies conforme descrito em nossa <a href="#politica-privacidade">Política de Privacidade</a>.</p>
+        </div>
+        <div class="lgpd-botoes">
+            <button id="lgpd-rejeitar" class="botao-secundario">Rejeitar</button>
+            <button id="lgpd-aceitar" class="botao-primario">Aceitar</button>
+        </div>
+        <div id="lgpd-mensagem-rejeicao" class="lgpd-mensagem-rejeicao">
+            <p>Não é possível acessar o site sem aceitar nossa Política de Privacidade e Cookies.</p>
+            <p>Estes são necessários para o funcionamento adequado do site.</p>
+            <button id="lgpd-reconsiderar" class="botao-primario">Reconsiderar</button>
+        </div>
+        </div>
+    </div>
+  
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+        <div class="container">
+            <div class="logo">
+                <a href="/" aria-label="Agência m2a - Página Inicial">
+                    <img src="assets/img/logo-m2a.webp" alt="Logo Agência m2a" width="120" height="34">
+                </a>
+            </div>
+            
+            <nav class="navegacao">
+                <button class="botao-menu" aria-label="Abrir Menu" aria-expanded="false" aria-controls="menu-principal">
+                    <span class="linha"></span>
+                    <span class="linha"></span>
+                    <span class="linha"></span>
+                </button>
+                
+                <ul id="menu-principal" class="menu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#quem-somos">Quem Somos</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#portfolio">Portfólio</a></li>
+                    <li><a href="#clientes">Clientes</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Banner Principal -->
+    <section id="inicio" class="banner-principal">
+        <div class="container">
+            <div class="conteudo-banner">
+                <h1 class="titulo-principal">Expertise para elevar o nível e sucesso da sua empresa!</h1>
+                <p class="subtitulo">Somos especialistas em ajudar pequenas, médias e grandes empresas de diversos segmentos a atingirem seus objetivos. <strong>Vamos juntos?</strong></p>
+                <a href="#contato" class="botao-primario botao-banner-principal">Vamos conversar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quem Somos -->
+    <section id="quem-somos" class="secao secao-quem-somos">
+        <div class="container">
+            <header class="cabecalho-secao">
+                <h2 class="titulo-secao">Quem Somos</h2>
+                <p class="subtitulo-secao">Ser diferente gerando grandes resultados</p>
+            </header>
+            
+            <div class="conteudo-quem-somos">
+                <div class="texto-quem-somos">
+                    <p>A Agência m2a nasceu em abril de 2019, fruto da parceria entre Lucas e Guilherme, profissionais do marketing digital estratégico. Identificando uma necessidade de serviços de qualidade na microregião de Jaboticabal/SP, eles fundaram a agência com o objetivo de oferecer soluções inovadoras e eficientes.</p>
+                    <p>Desde então, a m2a tem se destacado pelo compromisso com os clientes, conquistando reconhecimento e confiança no mercado. Atualmente a Agência m2a realiza uma série de serviços no âmbito do marketing estratégico, contando com mais de <strong>50 projetos de sucesso entregues</strong>.</p>
+                </div>
+                <div class="imagem-quem-somos">
+                    <img src="assets/img/jose-guilherme-pandolfi-e-ian.webp" alt="Guilherme e Ian durante Evento Campus Party" loading="lazy" data-tooltip="Guilherme e Ian durante Evento Campus Party">
+                </div>
+            </div>
+            
+            <div class="o-que-fazemos">
+                <h3 class="titulo-subsecao">O Que Fazemos</h3>
+                <div class="conteudo-o-que-fazemos">
+                    <p>Conectamos pessoas ao seu negócio através das ferramentas do digital que mais se popularizaram nos últimos anos, buscamos <strong>revolucionar</strong> toda a criação, o desenvolvimento e a operação de campanhas de marketing.</p>
+                    <p>Hoje em dia é possível criar um anúncio no Instagram ou Google, por exemplo, investindo valores bem mais modestos do que aqueles pagos às mídias tradicionais. Entretanto, saber trabalhar corretamente os anúncios digitais é o que realmente fará diferença para que aconteça o retorno financeiro.</p>
+                </div>
+            </div>
+            
+            <div class="visao-missao-valores">
+                <div class="item-vmv">
+                    <h3 class="titulo-vmv">Visão</h3>
+                    <p>Ser <strong>referência nacional</strong> na criação e implementação de estratégias de marketing para empresas de pequeno, médio e grande porte.</p>
+                </div>
+                <div class="item-vmv">
+                    <h3 class="titulo-vmv">Missão</h3>
+                    <p>Identificar, conectar e engajar o seu público-alvo ao seu negócio no ambiente on-line e digital, através de estratégias de marketing.</p>
+                </div>
+                <div class="item-vmv">
+                    <h3 class="titulo-vmv">Valores</h3>
+                    <p>Somos pautados pela <strong>transparência</strong> e pela <strong>eticidade</strong>. Acreditamos em um relacionamento sincero e transparente com nossos clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="servicos" class="secao secao-servicos">
+        <div class="container">
+            <header class="cabecalho-secao">
+                <h2 class="titulo-secao">Nossos Serviços</h2>
+                <p class="subtitulo-secao">Trabalhamos com as três camadas: <strong>operacional</strong>, <strong>tática</strong> e <strong>estratégica</strong></p>
+            </header>
+            
+            <p class="descricao-servicos">Todas as nossas soluções são <strong>personalizadas e adaptadas para cada cliente e cada necessidade</strong>, respeitando a história e personalidade da marca.</p>
+            
+            <div class="grid-servicos">
+                <div class="card-servico">
+                    <div class="icone-servico">
+                        <img src="assets/icones/redes-sociais.webp" alt="Ícone Gestão de Redes Sociais" width="60" height="60">
+                    </div>
+                    <h3 class="titulo-servico">Gestão de Redes Sociais</h3>
+                    <p class="descricao-servico">A Gestão de Redes Sociais da Agência m2a leva sua marca ao próximo nível, com planejamento estratégico e criação de conteúdos impactantes, que busquem atingir os seus objetivos de negócio, para Instagram, Facebook, Linkedin e TikTok.</p>
+                </div>
+                
+                <div class="card-servico">
+                    <div class="icone-servico">
+                        <img src="assets/icones/anuncios-pagos.webp" alt="Ícone Campanhas de Anúncios Pagos" width="60" height="60">
+                    </div>
+                    <h3 class="titulo-servico">Campanhas de Anúncios Pagos</h3>
+                    <p class="descricao-servico">A Administração de Campanhas de Anúncios Pagos da Agência m2a é a solução completa para potencializar sua visibilidade e conversão. Planejamos, criamos e gerimos campanhas estratégicas nas principais plataformas - Meta Ads, Google Ads e TikTok Ads.</p>
+                </div>
+                
+                <div class="card-servico">
+                    <div class="icone-servico">
+                        <img src="assets/icones/diagnostico-360.webp" alt="Ícone Diagnóstico Estratégico 360°" width="60" height="60">
+                    </div>
+                    <h3 class="titulo-servico">Diagnóstico Estratégico 360°</h3>
+                    <p class="descricao-servico">Nosso Diagnóstico Estratégico 360° oferece uma análise completa e personalizada do seu negócio, revelando oportunidades e traçando um plano de marketing focado em resultados.</p>
+                </div>
+                
+                <div class="card-servico">
+                    <div class="icone-servico">
+                        <img src="assets/icones/desenvolvimento-web.webp" alt="Ícone Websites e Sistemas" width="60" height="60">
+                    </div>
+                    <h3 class="titulo-servico">Websites, Landing Pages e Sistemas</h3>
+                    <p class="descricao-servico">Esse é o nosso core-business, do protótipo até a manutenção. Com mais de 150 websites entregues e mais de 100 clientes satisfeitos, nossa experiência se traduz em resultados.</p>
+                </div>
+            </div>
+            
+            <div class="outros-servicos">
+                <h3 class="titulo-outros-servicos">Outros Serviços</h3>
+                <ul class="lista-outros-servicos">
+                    <li>Design Gráfico Estratégico</li>
+                    <li>Consultoria em SEO</li>
+                    <li>Edição de Vídeos</li>
+                    <li>Pesquisa de Marketing</li>
+                    <li>Elaboração de Plano de Negócios</li>
+                    <li>Automação de Marketing</li>
+                    <li>E-mail Marketing</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfólio -->
+    <section id="portfolio" class="secao secao-portfolio">
+        <div class="container">
+            <header class="cabecalho-secao">
+                <h2 class="titulo-secao">Nosso Portfólio</h2>
+                <p class="subtitulo-secao">Ser <strong>diferente</strong>, gerar <strong>resultados diferentes</strong></p>
+            </header>
+            
+            <div class="introducao-portfolio">
+                <p>Todas as peças gráficas que você verá a seguir foram desenvolvidas por nós com direcionamento pensado para exibição em telas de luz própria, mais especificamente para uso em publicações de redes sociais, como <strong>Instagram</strong>, <strong>LinkedIn</strong> e <strong>Facebook</strong>.</p>
+            </div>
+            
+            <div class="busca-portfolio">
+                <div class="container-busca">
+                    <div class="campo-busca-wrapper">
+                      <input type="text" id="campoBuscaPortfolio" placeholder="Buscar no portfólio..." aria-label="Buscar trabalhos no portfólio">
+                      <div class="icone-busca">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div id="resultadosBusca" class="info-resultados"></div>
+                  </div>
+              </div>
+              
+
+            <div class="galeria-portfolio">
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/cortilar-casa-nova.webp" alt="Design para o Dia dos Namorados - Estácio" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Está de Casa Nova?</h3>
+                        <p><b>Cliente:</b> Cortilar</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/estacio-professor.webp" alt="Design gráficos para campanha de comemoração do Dia dos Professores" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha de Dia do Professor</h3>
+                        <p><b>Cliente:</b> Estácio</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/job-monitoramento-planos.webp" alt="Design gráfico para campanha para divulgação de planos de monitoramento veicular" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Planos para Monitoramento Veicular</h3>
+                        <p><b>Cliente:</b> Job Monitoramento</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/priscila-smooth-labios.webp" alt="Design gráfico sobre a técnica Smooth Lábios" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Smooth Lábios</h3>
+                        <p><b>Cliente:</b> Priscila Bassi Barbisan</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/casa-das-racoes.webp" alt="Design gráfico para campanhas de inbound marketing" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Curiosidades Pet</h3>
+                        <p><b>Cliente:</b> Casa das Rações</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/easy-nutri-dia-das-maes.webp" alt="Design gráfico em celebração ao Dia das Mães" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Dia das Mães</h3>
+                        <p><b>Cliente:</b> Easy Nutri</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/plannus-agencia-de-viagens.webp" alt="Design gráfico para divulgação de pacotes de viagem" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Pacote de Viagem</h3>
+                        <p><b>Cliente:</b> Plannus Agência de Viagens</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/micali-seguros-seguro-residencial.webp" alt="Design gráfico para campanha de vendas de seguro residencial" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Seguro Residencial</h3>
+                        <p><b>Cliente:</b> Micali Seguros</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/plannus-agencia-de-viagens-dia-dos-pais.webp" alt="Design gráfico em comemoração ao Dia dos Pais" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Dia dos Pais</h3>
+                        <p><b>Cliente:</b> Plannus Agência de Viagens</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/sueli-personal-organizer-antes-e-depois.webp" alt="Design gráfico publicação demonstrativa" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Antes e Depois Personal Organizer</h3>
+                        <p><b>Cliente:</b> Sueli Personal Organizer</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/pedroso-e-silva-advogados-dia-das-maes.webp" alt="Design gráfico em celebração ao Dia das Mães" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Dia das Mães</h3>
+                        <p><b>Cliente:</b> Pedroso e Silva Advogados</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/festa-universitaria-atletica-descubra-seu-par.webp" alt="Design gráfico para campanha de vendas de ingresso de festa universitária" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Festa Universitária</h3>
+                        <p><b>Cliente:</b> Atlética Unesp Jaboticabal</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/steel-house-aco-galvanizado.webp" alt="Design gráfico para comercialização de aço galvanizado" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Aço Galvanizado</h3>
+                        <p><b>Cliente:</b> Steel House</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/prit-app-pet.webp" alt="Design gráfico para campanha de download de aplicativos" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Download de App</h3>
+                        <p><b>Cliente:</b> Prit App</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/easy-nutri-whey-protein.webp" alt="Design gráfico para venda de suplemento alimentar" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Venda de Whey Protein</h3>
+                        <p><b>Cliente:</b> Easy Nutri</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/joao-steinle-nutricionista.webp" alt="Design gráfico para apresentação profissional" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Apresentação Nutricionista</h3>
+                        <p><b>Cliente:</b> João Steinle</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/prit-app-8-dicas-personal-trainer.webp" alt="Design gráfico para campanha de download de aplicativos" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Campanha Download de App</h3>
+                        <p><b>Cliente:</b> Prit App</p>
+                    </div>
+                </div>
+                
+                <div class="item-portfolio" data-tooltip="Clique para expandir">
+                    <img src="assets/img/portfolio/onetwothree-escola-de-ingles.webp" alt="Design gráfico para anúncio de matrículas abertas em uma escola de inglês" loading="lazy">
+                    <div class="info-portfolio">
+                        <h3>Anúncio Escola de Inglês</h3>
+                        <p><b>Cliente:</b> OneTwoThree</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="controles-portfolio">
+                <button id="carregarMais" class="botao-secundario">Ver mais trabalhos</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clientes -->
+    <section id="clientes" class="secao secao-clientes">
+        <div class="container">
+            <header class="cabecalho-secao">
+                <h2 class="titulo-secao">Nossos Clientes</h2>
+                <p class="subtitulo-secao">Confiaram em nosso trabalho</p>
+            </header>
+            
+            <div class="carrossel-clientes-container">
+                <div class="carrossel-clientes">
+                    <!-- Itens originais -->
+                    <div class="cliente" data-tooltip="Everton Silva Cantor Campeão do Ídolos: Musicista que conquistou o Brasil, performando principalmente em canções de samba e MPB">
+                        <img src="assets/img/clientes/everton-silva-cantor-idolos.webp" alt="Everton Silva Campeão do Ídolos" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="República Tcheca: Organizadora de festas e eventos universitários na região de Taquaritinga - São Paulo">
+                        <img src="assets/img/clientes/republica-tcheca.webp" alt="Logo República Tcheca" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Aldec Esquadrias de Alumínio: Empresa especializada em esquadrias, portas e janelas de alumínio, com foco em qualidade e acabamento">
+                        <img src="assets/img/clientes/aldec-esquadrias-de-aluminio.webp" alt="Logo Aldec" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Casa das Rações: Comércio de produtos para pets e agropecuária, parceira em estratégias de marketing de conteúdo e redes sociais">
+                        <img src="assets/img/clientes/casa-das-racoes.webp" alt="Logo Casa das Rações" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Estácio EAD Polo Matão: Unidade de ensino superior à distância, com estratégias de captação de alunos e divulgação de cursos">
+                        <img src="assets/img/clientes/estacio-ead-polo-matao.webp" alt="Logo Estácio EAD Polo Matão" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Job Monitoramento: Empresa de tecnologia especializada em soluções de rastreamento e monitoramento veicular">
+                        <img src="assets/img/clientes/job-monitoramento.webp" alt="Logo Job Monitoramento" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Micali Seguros: Corretora de seguros com mais de 30 anos no mercado, oferecendo diversas modalidades de seguros para pessoas e empresas">
+                        <img src="assets/img/clientes/micali-corretora-de-seguros.webp" alt="Logo Micali Seguros" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Plannus Agência de Viagens: Especializada em pacotes turísticos personalizados e atendimento exclusivo para viagens nacionais e internacionais">
+                        <img src="assets/img/clientes/plannus-agencia-de-viagens.webp" alt="Logo Plannus" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Priscila Bassi Barbisan: Profissional de estética avançada especializada em procedimentos faciais e corporais">
+                        <img src="assets/img/clientes/priscila-bassi-barbisan-estetica-avancada.webp" alt="Logo Priscila Bassi Barbisan" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="OneTwoThree English School: Escola de inglês com metodologia diferenciada e foco em conversação prática">
+                        <img src="assets/img/clientes/onetwothree-english-school.webp" alt="Logo OneTwoThree English School" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Pedroso & Silva: Escritório de advocacia e consultoria jurídica com atuação em diversas áreas do direito">
+                        <img src="assets/img/clientes/pedroso-e-silva-advocacia-e-consultoria.webp" alt="Logo Pedroso & Silva advocacia e consultoria" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Cammaleão: Marca de moda estampada com design exclusivo e produção artesanal, parceira em estratégias de marketing digital">
+                        <img src="assets/img/clientes/cammaleao-moda-estampada.webp" alt="Logo Cammaleão A Moda Estampada" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Cortilar: Loja de decoração e utilidades domésticas com foco em produtos diferenciados e de qualidade">
+                        <img src="assets/img/clientes/cortilar.webp" alt="Logo Cortilar" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Easy Nutri Suplementos: Loja especializada em suplementação alimentar com foco em nutrição esportiva e bem-estar">
+                        <img src="assets/img/clientes/easy-nutri-suplementos.webp" alt="Logo Easy Nutri Suplementos" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Prit App: Plataforma digital que conecta profissionais de saúde, beleza e bem-estar aos clientes">
+                        <img src="assets/img/clientes/prit-app.webp" alt="Logo Prit App" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Bruno Serralheria: Empresa especializada em serviços de serralheria, portões e estruturas metálicas">
+                        <img src="assets/img/clientes/bruno-serralheria.webp" alt="Logo Bruno Serralheria" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Best Market: Supermercado com atendimento personalizado e produtos selecionados, focado na experiência do cliente">
+                        <img src="assets/img/clientes/best-market.webp" alt="Logo Best Market" loading="lazy">
+                    </div>
+
+                    <!-- Itens duplicados para criar efeito de loop contínuo -->
+                    <div class="cliente" data-tooltip="Everton Silva Cantor Campeão do Ídolos: musicista que conquistou o Brasil, performando principalmente em canções de samba e MPB">
+                        <img src="assets/img/clientes/everton-silva-cantor-idolos.webp" alt="Everton Silva Campeão do Ídolos" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="República Tcheca: Organizadora de festas e eventos universitários na região de Taquaritinga - São Paulo">
+                        <img src="assets/img/clientes/republica-tcheca.webp" alt="Logo República Tcheca" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Aldec Esquadrias de Alumínio: Empresa especializada em esquadrias, portas e janelas de alumínio, com foco em qualidade e acabamento">
+                        <img src="assets/img/clientes/aldec-esquadrias-de-aluminio.webp" alt="Logo Aldec" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Casa das Rações: Comércio de produtos para pets e agropecuária, parceira em estratégias de marketing de conteúdo e redes sociais">
+                        <img src="assets/img/clientes/casa-das-racoes.webp" alt="Logo Casa das Rações" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Estácio EAD Polo Matão: Unidade de ensino superior à distância, com estratégias de captação de alunos e divulgação de cursos">
+                        <img src="assets/img/clientes/estacio-ead-polo-matao.webp" alt="Logo Estácio EAD Polo Matão" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Job Monitoramento: Empresa de tecnologia especializada em soluções de rastreamento e monitoramento veicular">
+                        <img src="assets/img/clientes/job-monitoramento.webp" alt="Logo Job Monitoramento" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Micali Seguros: Corretora de seguros com mais de 30 anos no mercado, oferecendo diversas modalidades de seguros para pessoas e empresas">
+                        <img src="assets/img/clientes/micali-corretora-de-seguros.webp" alt="Logo Micali Seguros" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Plannus Agência de Viagens: Especializada em pacotes turísticos personalizados e atendimento exclusivo para viagens nacionais e internacionais">
+                        <img src="assets/img/clientes/plannus-agencia-de-viagens.webp" alt="Logo Plannus" loading="lazy">
+                    </div>
+                    <div class="cliente" data-tooltip="Priscila Bassi Barbisan: Profissional de estética avançada especializada em procedimentos faciais e corporais">
+                        <img src="assets/img/clientes/priscila-bassi-barbisan-estetica-avancada.webp" alt="Logo Priscila Bassi Barbisan" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="secao secao-contato">
+        <div class="container">
+            <header class="cabecalho-secao">
+                <h2 class="titulo-secao">Vamos Decolar Seu Negócio nos Meios Digitais?</h2>
+                <p class="subtitulo-secao">Conheça nossas soluções em Marketing Digital</p>
+            </header>
+            
+            <div class="grid-contato">
+                <div class="form-contato">
+                    <h3 class="titulo-form">Agende uma conversa conosco</h3>
+                    <form id="formularioContato" class="formulario">
+                        <div class="campo-formulario">
+                            <label for="nome">Nome completo:</label>
+                            <input type="text" id="nome" name="nome" placeholder="Ex.: João Ricardo" required>
+                        </div>
+                        
+                        <div class="campo-formulario">
+                            <label for="email">E-mail:</label>
+                            <input type="email" id="email" name="email" placeholder="contato@suaempresa.com.br" required>
+                        </div>
+                        
+                        <div class="campo-formulario">
+                            <label for="telefone">Telefone/WhatsApp:</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(16) 99999-9999" required>
+                        </div>
+                        
+                        <div class="campo-formulario">
+                            <label for="empresa">Empresa:</label>
+                            <input type="text" id="empresa" name="empresa" placeholder="Empresa Grupo Novo Horizonte">
+                        </div>
+                        
+                        <div class="campo-formulario">
+                            <label for="mensagem">Mensagem:</label>
+                            <textarea id="mensagem" name="mensagem" rows="5" placeholder="Conte-nos mais sobre sua necessidade ou projeto..."></textarea>
+                        </div>
+                        
+                        <div class="campo-formulario campo-servicos">
+                            <p class="titulo-campo">Serviços de interesse:</p>
+                            <div class="opcoes-servicos">
+                                <div class="opcao">
+                                    <input type="checkbox" id="diagnostico" name="servicos[]" value="diagnostico">
+                                    <label for="diagnostico">Diagnóstico Estratégico 360°</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="redesSociais" name="servicos[]" value="redes-sociais">
+                                    <label for="redesSociais">Gestão de Redes Sociais</label>
+                                </div>
+                                
+                                <div class="opcao">
+                                    <input type="checkbox" id="anuncios" name="servicos[]" value="anuncios">
+                                    <label for="anuncios">Campanhas de Anúncios Pagos</label>
+                                </div>
+                                
+                                <div class="opcao">
+                                    <input type="checkbox" id="websites" name="servicos[]" value="websites">
+                                    <label for="websites">Websites e Landing Pages</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="automacao" name="servicos[]" value="diagnostico">
+                                    <label for="automacao">Automação de Marketing</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="email" name="servicos[]" value="diagnostico">
+                                    <label for="email">E-mail Marketing</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="sistemas" name="servicos[]" value="diagnostico">
+                                    <label for="sistemas">Softwares e Sistemas</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="videos" name="servicos[]" value="diagnostico">
+                                    <label for="videos">Produção e Edição de Vídeos</label>
+                                </div>
+
+                                <div class="opcao">
+                                    <input type="checkbox" id="outros" name="servicos[]" value="diagnostico">
+                                    <label for="outros">Outros</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="botao-primario">Enviar mensagem</button>
+                    </form>
+                </div>
+                
+                <div class="info-contato">
+                    <div class="bloco-info">
+                        <h3>Contatos</h3>
+                        <ul class="lista-contatos">
+                            <li>
+                                <div class="icone-contato">
+                                    <img src="assets/icones/telefone.webp" alt="Telefone" width="24" height="24">
+                                </div>
+                                <p>(16) 99222-9082</p>
+                            </li>
+                            <li>
+                                <div class="icone-contato">
+                                    <img src="assets/icones/whatsapp.webp" alt="WhatsApp" width="24" height="24">
+                                </div>
+                                <p>(16) 99261-6385</p>
+                            </li>
+                            <li>
+                                <div class="icone-contato">
+                                    <img src="assets/icones/email.webp" alt="E-mail" width="24" height="24">
+                                </div>
+                                <p>contato@agenciam2a.com.br</p>
+                            </li>
+                            <li>
+                                <div class="icone-contato">
+                                    <img src="assets/icones/localizacao.webp" alt="Localização" width="24" height="24">
+                                </div>
+                                <p>Rua Bernardino Sampaio, 490<br>Araraquara - SP</p>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bloco-info">
+                        <h3>Redes Sociais</h3>
+                        <ul class="lista-redes-sociais">
+                            <li>
+                                <a href="https://instagram.com/agenciam2a" target="_blank" rel="noopener" aria-label="Instagram da Agência m2a">
+                                    <img src="assets/icones/instagram.webp" alt="Instagram" width="32" height="32">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/ag%C3%AAncia-m2a/" target="_blank" rel="noopener" aria-label="LinkedIn da Agência m2a">
+                                    <img src="assets/icones/linkedin.webp" alt="LinkedIn" width="32" height="32">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/ag%C3%AAncia-m2a/" target="_blank" rel="noopener" aria-label="TikTok da Agência m2a">
+                                    <img src="assets/icones/tiktok.webp" alt="TikTok" width="32" height="32">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/agenciam2a.marketing" target="_blank" rel="noopener" aria-label="Facebook da Agência m2a">
+                                    <img src="assets/icones/facebook.webp" alt="Facebook" width="32" height="32">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="rodape">
+        <div class="container">
+            <div class="grid-rodape">
+                <div class="coluna-rodape coluna-logo">
+                    <img src="assets/img/logo-m2a.webp" alt="Logo Agência m2a" width="150" height="80">
+                    <p>Conectamos pessoas ao seu negócio através das ferramentas do digital que mais se popularizaram nos últimos anos.</p>
+                </div>
+                
+                <div class="coluna-rodape">
+                    <h3>Links Rápidos</h3>
+                    <ul class="links-rodape">
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#quem-somos">Quem Somos</a></li>
+                        <li><a href="#servicos">Serviços</a></li>
+                        <li><a href="#portfolio">Portfólio</a></li>
+                        <li><a href="#clientes">Clientes</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="coluna-rodape">
+                    <h3>Serviços</h3>
+                    <ul class="links-rodape">
+                        <li><a href="#servicos">Gestão de Redes Sociais</a></li>
+                        <li><a href="#servicos">Campanhas de Anúncios</a></li>
+                        <li><a href="#servicos">Websites e Sistemas</a></li>
+                        <li><a href="#servicos">Diagnóstico 360°</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Agência m2a. Todos os direitos reservados.</p>
+                <p class="hashtag">#façadiferente</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão WhatsApp -->
+    <a href="https://wa.me/5516992229082" class="botao-whatsapp" target="_blank" rel="noopener" aria-label="Contato via WhatsApp">
+        <img src="assets/icones/whatsapp.webp" alt="WhatsApp" width="40" height="40">
+    </a>
+
+    <!-- Botão Voltar ao Topo -->
+    <button id="botaoTopo" class="botao-topo" aria-label="Voltar ao topo">
+        <img src="assets/icones/seta-cima.webp" alt="Seta para cima" width="24" height="24">
+    </button>
+
+    <!-- Container para tooltips personalizados -->
+    <div id="tooltip-personalizado" class="tooltip-container" role="tooltip" aria-hidden="true">
+        <div class="tooltip-conteudo">
+            <div class="tooltip-texto"></div>
+        </div>
+        <div class="tooltip-seta"></div>
+    </div>
+
+    <!-- Modal para visualização de imagens do portfólio -->
+    <div id="modal-portfolio" class="modal">
+        <button id="btn-fechar-modal" class="botao-modal" aria-label="Fechar visualização ampliada">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M368 368L144 144M368 144L144 368" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+            </svg>
+        </button>
+        <button id="btn-anterior-modal" class="botao-modal botao-navegacao" aria-label="Imagem anterior">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M328 112L184 256l144 144" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+            </svg>
+        </button>
+        <div class="conteudo-modal">
+            <img id="img-modal" src="" alt="Imagem ampliada do portfólio">
+            <div id="legenda-modal"></div>
+        </div>
+        <button id="btn-proximo-modal" class="botao-modal botao-navegacao" aria-label="Próxima imagem">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M184 112l144 144-144 144" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="scripts.js" defer></script>
+</body>
+</html>

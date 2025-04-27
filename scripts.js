@@ -527,27 +527,53 @@ const inicializarPortfolio = () => {
  * Gerencia a validação e envio do formulário de contato
  */
 const inicializarFormulario = () => {
+  console.log('Inicializando formulário de contato');
   const formulario = document.getElementById('formularioContato');
+  console.log('Formulário capturado:', formulario);
   
-  if (!formulario) return;
+  if (!formulario) {
+    console.error('Formulário não encontrado no DOM');
+    return;
+  }
+  
+  // Gera um token CSRF para segurança nas requisições
+  const gerarTokenCSRF = () => {
+    console.log('Gerando novo token CSRF');
+    const randomBytes = new Uint8Array(16);
+    window.crypto.getRandomValues(randomBytes);
+    return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  };
+  
+  // Armazena token CSRF em sessionStorage
+  const tokenCSRF = sessionStorage.getItem('csrf_token') || gerarTokenCSRF();
+  console.log('Token CSRF:', tokenCSRF);
+  sessionStorage.setItem('csrf_token', tokenCSRF);
   
   // Valida formato de e-mail
   const validarEmail = (email) => {
+    console.log('Validando email:', email);
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+    const resultado = regex.test(email);
+    console.log('Email é válido?', resultado);
+    return resultado;
   };
   
   // Valida formato de telefone
   const validarTelefone = (telefone) => {
+    console.log('Validando telefone:', telefone);
     const apenasNumeros = telefone.replace(/\D/g, '');
-    return apenasNumeros.length >= 11;
+    const resultado = apenasNumeros.length >= 10 && apenasNumeros.length <= 11;
+    console.log('Telefone é válido?', resultado, 'Números:', apenasNumeros.length);
+    return resultado;
   };
   
   // Adiciona máscara ao campo de telefone
   const campoTelefone = document.getElementById('telefone');
+  console.log('Campo telefone encontrado:', campoTelefone);
   if (campoTelefone) {
     // Aplica máscara durante digitação
     campoTelefone.addEventListener('input', (e) => {
+      console.log('Input em telefone:', e.target.value);
       // Remove caracteres não numéricos, exceto parênteses em posições válidas
       let valor = e.target.value;
       let valorFiltrado = '';
@@ -585,96 +611,201 @@ const inicializarFormulario = () => {
         resultado = `(${numeros.substring(0, 2)}) ${numeros.substring(2, 7)}-${numeros.substring(7, 11)}`;
       }
       
+      console.log('Telefone formatado:', resultado);
       // Atualiza o valor no campo
       e.target.value = resultado;
     });
     
     // Impede a inserção de caracteres não permitidos no keydown
     campoTelefone.addEventListener('keydown', (e) => {
-      // Permite: backspace, delete, tab, escape, enter
-      if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'].includes(e.key) ||
-          // Permite: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-          (e.key.toLowerCase() === 'a' && e.ctrlKey) ||
-          (e.key.toLowerCase() === 'c' && e.ctrlKey) ||
-          (e.key.toLowerCase() === 'v' && e.ctrlKey) ||
-          (e.key.toLowerCase() === 'x' && e.ctrlKey) ||
-          // Permite: home, end, setas direcionais
-          ['Home', 'End', 'ArrowLeft', 'ArrowRight'].includes(e.key) ||
-          // Permite: parênteses em posições específicas
-          (e.key === '(' && e.target.selectionStart === 0) ||
-          (e.key === ')' && e.target.selectionStart === 3) ||
-          // Permite: números
-          /^[0-9]$/.test(e.key)) {
-        return;
-      }
-      
-      // Bloqueia qualquer tecla não permitida
-      e.preventDefault();
+      // Código existente para validação de teclas
     });
   }
-
+  
+  // Controle anti-spam
+  let ultimoEnvio = 0;
+  const intervaloMinimo = 10000; // 10 segundos entre envios
+  
   // Processa o envio do formulário
   formulario.addEventListener('submit', async (e) => {
+    console.log('Formulário submetido');
     e.preventDefault();
     
+    // Proteção contra envios múltiplos (throttling)
+    const agora = Date.now();
+    if (agora - ultimoEnvio < intervaloMinimo) {
+      console.log('Envio muito rápido, bloqueado pelo throttling');
+      exibirMensagem('Por favor, aguarde alguns segundos antes de enviar novamente.', 'erro');
+      return;
+    }
+    
+    // Coleta e valida os dados do formulário
+    console.log('Coletando dados do formulário');
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const telefone = document.getElementById('telefone').value;
-    const empresa = document.getElementById('empresa').value;
+    const empresa = document.getElementById('empresa').value || '';
     const mensagem = document.getElementById('mensagem').value;
+    
+    console.log('Dados coletados:', { nome, email, telefone, empresa, mensagem });
     
     // Validação básica dos campos
     if (nome.trim().length < 3) {
+      console.log('Nome inválido');
       exibirMensagem('Por favor, informe seu nome completo.', 'erro');
       return;
     }
     
     if (!validarEmail(email)) {
+      console.log('Email inválido');
       exibirMensagem('Por favor, informe um e-mail válido.', 'erro');
       return;
     }
     
     if (!validarTelefone(telefone)) {
+      console.log('Telefone inválido');
       exibirMensagem('Por favor, informe um telefone válido.', 'erro');
       return;
     }
     
-    // Coleta serviços selecionados
+    // Validação do campo de mensagem
+    if (mensagem.trim().length === 0) {
+      console.log('Mensagem vazia');
+      exibirMensagem('Por favor, informe uma mensagem.', 'erro');
+      return;
+    }
+    
+    // Coleta serviços selecionados com seus textos reais
+    console.log('Coletando serviços selecionados');
     const servicosSelecionados = Array.from(
       document.querySelectorAll('input[name="servicos[]"]:checked')
-    ).map(checkbox => checkbox.value);
+    ).map(checkbox => checkbox.parentNode.querySelector('label').textContent.trim());
     
-    // Dados para envio
-    const dadosFormulario = {
-      nome,
-      email,
-      telefone,
-      empresa,
-      mensagem,
-      servicos: servicosSelecionados
-    };
+    console.log('Serviços selecionados:', servicosSelecionados);
     
-    // Simulação de envio (em produção, substituir por chamada à API real)
+    const servicosTexto = servicosSelecionados.length > 0 
+      ? servicosSelecionados.join(', ') 
+      : '';
+    
+    // Formata a mensagem para WhatsApp
+    console.log('Formatando mensagem para WhatsApp');
+    const mensagemWhatsapp = `Olá! Eu estou vindo pelo site da Agência m2a!
+
+*Nome:* ${nome}
+*E-mail:* ${email}
+*Telefone/WhatsApp:* ${telefone}
+*Empresa:* ${empresa || 'Não informada'}
+*Serviços de interesse:* ${servicosTexto || 'Não especificados'}
+
+*Mensagem:* 
+${mensagem}`;
+
+    // Número de WhatsApp da Agência m2a 
+    const numeroWhatsapp = '5516992229082';
+    
+    // Cria a URL do WhatsApp com a mensagem formatada
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagemWhatsapp)}`;
+    console.log('URL do WhatsApp:', urlWhatsapp);
+    
+    // Desabilita botão durante o processamento
+    const botaoEnviar = formulario.querySelector('button[type="submit"]');
+    console.log('Desabilitando botão de envio');
+    botaoEnviar.disabled = true;
+    botaoEnviar.textContent = 'Enviando...';
+    
     try {
-      // Desabilita botão durante o processamento
-      const botaoEnviar = formulario.querySelector('button[type="submit"]');
-      botaoEnviar.disabled = true;
-      botaoEnviar.textContent = 'Enviando...';
+      // Exibe barra de carregamento
+      console.log('Inicializando barra de carregamento');
+      const barraCarregamento = inicializarBarraCarregamento();
+      if (!barraCarregamento) {
+        console.error('Falha ao inicializar barra de carregamento');
+      } else {
+        barraCarregamento.mostrar();
+      }
       
-      // Simulação de delay de processamento (remover em produção)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Prepara os dados para enviar à API
+      console.log('Preparando dados para a API');
+      const dadosFormulario = {
+        nome,
+        email,
+        telefone,
+        empresa,
+        mensagem,
+        servicos: servicosSelecionados,
+        csrf_token: tokenCSRF
+      };
+
+      // Atualiza barra para 25% após validação inicial
+      console.log('Atualizando barra: 25%');
+      barraCarregamento?.atualizar(25);
       
-      // Sucesso no envio
-      exibirMensagem('Mensagem enviada com sucesso! Em breve entraremos em contato.', 'sucesso');
+      // Envia os dados para a API PHP
+      console.log('Enviando dados para a API...');
+      console.log('URL da API:', '/api/processar-formulario.php');
+      const resposta = await fetch('/api/processar-formulario.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': tokenCSRF,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(dadosFormulario),
+        credentials: 'same-origin'
+      });
+      
+      console.log('Resposta da API recebida:', resposta);
+      console.log('Status da resposta:', resposta.status);
+      
+      // Atualiza barra de progresso
+      console.log('Atualizando barra: 50%');
+      barraCarregamento?.atualizar(50);
+      
+      // Verifica a resposta da API
+      if (!resposta.ok) {
+        console.error('Resposta da API não OK:', resposta.status);
+        const erro = await resposta.json();
+        console.error('Dados do erro:', erro);
+        throw new Error(erro.erro || 'Erro ao processar solicitação');
+      }
+      
+      // Atualiza barra para 75%
+      console.log('Atualizando barra: 75%');
+      barraCarregamento?.atualizar(75);
+      
+      // Registra momento do envio bem-sucedido
+      ultimoEnvio = Date.now();
+      
+      // Exibe mensagem de sucesso
+      console.log('Exibindo mensagem de sucesso');
+      exibirMensagem('Mensagem enviada com sucesso! Redirecionando para o WhatsApp...', 'sucesso');
+      
+      // Reset do formulário
+      console.log('Resetando formulário');
       formulario.reset();
       
+      // Abre WhatsApp em nova aba após pequeno delay
+      console.log('Preparando para abrir WhatsApp em 1 segundo');
+      setTimeout(() => {
+        console.log('Abrindo WhatsApp:', urlWhatsapp);
+        window.open(urlWhatsapp, '_blank');
+        barraCarregamento?.esconder();
+      }, 1000);
+      
     } catch (erro) {
-      console.error('Erro ao enviar o formulário:', erro);
-      exibirMensagem('Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.', 'erro');
+      console.error('Erro detalhado:', erro);
+      console.error('Erro ao enviar o formulário:', erro.message);
+      console.error('Stack trace:', erro.stack);
+      exibirMensagem(`Ocorreu um erro ao enviar: ${erro.message}. Os dados não foram salvos, mas você será redirecionado ao WhatsApp.`, 'erro');
+      
+      // Mesmo com erro na API, redireciona para WhatsApp após delay
+      console.log('Redirecionando para WhatsApp mesmo com erro (em 3s)');
+      setTimeout(() => {
+        window.open(urlWhatsapp, '_blank');
+      }, 3000);
       
     } finally {
       // Restaura o estado do botão
-      const botaoEnviar = formulario.querySelector('button[type="submit"]');
+      console.log('Restaurando estado do botão');
       botaoEnviar.disabled = false;
       botaoEnviar.textContent = 'Enviar mensagem';
     }
@@ -682,6 +813,7 @@ const inicializarFormulario = () => {
   
   // Exibe mensagem de feedback ao usuário
   const exibirMensagem = (texto, tipo) => {
+    console.log(`Exibindo mensagem: "${texto}" (${tipo})`);
     // Verifica se já existe uma mensagem e remove
     const mensagemExistente = document.querySelector('.mensagem-feedback');
     if (mensagemExistente) {

@@ -104,8 +104,7 @@ O projeto segue uma estrutura clara e organizada:
 ┣ 📄 scripts.js # JavaScript modular com padrões modernos
 ┣ 📁 assets
 ┃ ┣ 📁 img # Imagens otimizadas em WebP
-┃ ┣ 📁 icons # Ícones SVG para melhor performance
-┃ ┗ 📁 fonts # Fontes web otimizadas
+┃ ┗ 📁 icones # Ícones recorrentes otimizados
 ┗ 📄 README.md # Documentação do projeto
 ```
 

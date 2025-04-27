@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarNavegacao();
   inicializarCursorPersonalizado();
   inicializarBotaoTopo();
+  inicializarBotaoWhatsApp();
   inicializarAnimacoesScroll();
   GerenciadorTooltips.inicializar();
   inicializarFormulario();
@@ -282,6 +283,44 @@ const inicializarAnimacoesScroll = () => {
   
   // Monitora a rolagem para animar elementos adicionais
   window.addEventListener('scroll', verificarVisibilidade);
+};
+
+/**
+ * Configura o botão flutuante de WhatsApp para rolar até o formulário
+ */
+const inicializarBotaoWhatsApp = () => {
+  const botaoWhatsApp = document.querySelector('.botao-whatsapp');
+  const formularioContato = document.querySelector('.form-contato');
+  
+  if (!botaoWhatsApp || !formularioContato) return;
+  
+  botaoWhatsApp.addEventListener('click', (e) => {
+    // Previne comportamento padrão de abrir o WhatsApp diretamente
+    e.preventDefault();
+    
+    // Obtém a seção de contato para rolagem
+    const secaoContato = document.getElementById('contato');
+    
+    // Rola a página até a seção de contato
+    secaoContato.scrollIntoView({ behavior: 'smooth' });
+    
+    // Após a rolagem, destaca o formulário com a animação de contorno piscante
+    setTimeout(() => {
+      // Remove a classe caso já estivesse aplicada anteriormente
+      formularioContato.classList.remove('form-destacado');
+      
+      // Força um reflow para garantir que a animação funcione mesmo se clicado novamente
+      void formularioContato.offsetWidth;
+      
+      // Adiciona a classe para iniciar a animação
+      formularioContato.classList.add('form-destacado');
+      
+      // Remove a classe após a animação terminar
+      setTimeout(() => {
+        formularioContato.classList.remove('form-destacado');
+      }, 2500); // Duração aproximada das 3 piscadas (3 * 0.8s)
+    }, 800); // Tempo aproximado para rolagem terminar
+  });
 };
 
 /**

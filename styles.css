@@ -895,6 +895,7 @@
     font-family: var(--fonte-principal);
     font-size: 1.6rem;
     transition: var(--transicao-padrao);
+    resize: none;
   }
   
   .campo-formulario input:focus,
@@ -985,7 +986,17 @@
     transform: translateY(-5px);
   }
   
-  /* ----------------- 11. Rodapé ----------------- */
+
+  /* ----------------- 11. Animação de Contorno Formulário ----------------- */
+  .form-destacado {
+    border: 1px solid var(--cor-magenta);
+    box-shadow: 0 0 30px 8px rgba(214, 36, 84, 0.9);
+    position: relative;
+    z-index: 10;
+    transition: none !important; /* Previne que outras transições interfiram */
+  }
+
+  /* ----------------- 12. Rodapé ----------------- */
   .rodape {
     background-color: var(--cor-bg-secundaria);
     padding: 6rem 0 2rem;
@@ -1049,7 +1060,7 @@
     font-weight: 700;
   }
   
-  /* ----------------- 12. Botões Flutuantes ----------------- */
+  /* ----------------- 13. Botões Flutuantes ----------------- */
   .botao-whatsapp {
     position: fixed;
     bottom: 3rem;
@@ -1102,7 +1113,7 @@
     transform: translateY(-5px);
   }
   
-  /* ----------------- 13. Responsividade ----------------- */
+  /* ----------------- 14. Responsividade ----------------- */
   @media (max-width: 1200px) {
     html {
       font-size: 58%;
@@ -1252,7 +1263,7 @@
     }
   }
   
-  /* ----------------- 14. Animações de navegação ----------------- */
+  /* ----------------- 15. Animações de navegação ----------------- */
   @keyframes aparecerDeBaixo {
     from {
       opacity: 0;
@@ -1281,7 +1292,7 @@
     100% { transform: translateX(0); }
   }
 
-/* ----------------- 15. Cursor Personalizado ----------------- */
+/* ----------------- 16. Cursor Personalizado ----------------- */
 body {
   cursor: none; /* Esconde o cursor padrão */
 }
@@ -1357,7 +1368,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 16. Barra de Carregamento ----------------- */
+/* ----------------- 17. Barra de Carregamento ----------------- */
 #barra-carregamento-container {
   position: fixed;
   top: 0;
@@ -1397,7 +1408,7 @@ input, textarea {
   opacity: 1; /* Brilho aparece ao passar o mouse */
 }
 
-/* ----------------- 17. Tooltips Personalizados ----------------- */
+/* ----------------- 18. Tooltips Personalizados ----------------- */
 .tooltip-container {
   position: fixed;
   z-index: 10000;
@@ -1460,7 +1471,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 18. Modal do Portfólio ----------------- */
+/* ----------------- 19. Modal do Portfólio ----------------- */
 .modal {
   display: none;
   position: fixed;
@@ -1619,7 +1630,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 19. Modal de Consentimento LGPD ----------------- */
+/* ----------------- 20. Modal de Consentimento LGPD ----------------- */
 .lgpd-modal {
   position: fixed;
   top: 0;
@@ -1717,7 +1728,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 20. Acessibilidade ----------------- */
+/* ----------------- 21. Acessibilidade ----------------- */
 
 /* Reduzir movimentos para usuários que preferem menos animações */
 @media (prefers-reduced-motion: reduce) {

@@ -99,6 +99,42 @@ const inicializarConsentimentoLGPD = () => {
     botaoReconsiderar.addEventListener('click', reconsiderarRejeicao);
   };
   
+  // Captura o clique no link da política de privacidade
+  const linkPolitica = document.querySelector('.lgpd-texto a[href="#politica-privacidade"]');
+
+  if (linkPolitica) {
+    linkPolitica.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      try {
+        // Faz a requisição para carregar o arquivo de texto
+        const resposta = await fetch('assets/TERMOS-DE-USO-E-POLITICA-DE-PRIVACIDADE.txt');
+        if (!resposta.ok) throw new Error('Falha ao carregar o arquivo de texto');
+        const textoTermos = await resposta.text();
+
+        // Cria o textarea somente leitura
+        const textarea = document.createElement('textarea');
+        textarea.readOnly = true;
+        textarea.classList.add('lgpd-termos');
+        textarea.value = textoTermos;
+
+        // Insere o textarea no modal, entre a div.lgpd-texto e a div.lgpd-botoes
+        const divTexto = document.querySelector('.lgpd-texto');
+        const divBotoes = document.querySelector('.lgpd-botoes');
+
+        if (divTexto && divBotoes) {
+          // Remove textarea antigo se existir
+          const textareaExistente = document.querySelector('.lgpd-termos');
+          if (textareaExistente) textareaExistente.remove();
+
+          divTexto.insertAdjacentElement('afterend', textarea);
+        }
+      } catch (erro) {
+        console.error('Erro ao carregar os termos:', erro);
+      }
+    });
+  }
+
   // Inicializa o sistema de consentimento
   const inicializar = () => {
     configurarEventos();

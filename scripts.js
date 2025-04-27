@@ -10,6 +10,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Inicializa todos os módulos funcionais do site
   inicializarPreloader();
+  GerenciadorTracking.inicializar();
   inicializarNavegacao();
   inicializarCursorPersonalizado();
   inicializarBotaoTopo();
@@ -72,6 +73,8 @@ const inicializarConsentimentoLGPD = () => {
   const aceitarTermos = () => {
     salvarConsentimento();
     ocultarModal();
+    GerenciadorTracking.carregar();
+    GerenciadorTracking.consentir();
     continuarCarregamento();
   };
   
@@ -160,6 +163,127 @@ const inicializarPreloader = () => {
     }
   });
 };
+
+/**
+ * Gerencia o carregamento e configuração de ferramentas de tracking (Clarity e PostHog)
+ */
+const GerenciadorTracking = (function() {
+  // IDs e configurações
+  const CLARITY_PROJECT_ID = 'm1ee0kdf17';
+  const POSTHOG_API_KEY = 'phc_rJ0hkpCluCUtcgqmE3NDKnPyyNnGlbmG01cnbsb79E5';
+  const POSTHOG_API_HOST = 'https://us.i.posthog.com';
+  
+  // Status de carregamento
+  let clarityCarregado = false;
+  let posthogCarregado = false;
+  
+  /**
+   * Carrega o script do Microsoft Clarity dinamicamente
+   */
+  function carregarClarity() {
+    if (clarityCarregado) return;
+    
+    try {
+      // Configura a função global clarity
+      window.clarity = window.clarity || function(){(window.clarity.q = window.clarity.q || []).push(arguments)};
+      
+      // Cria o elemento de script
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
+      
+      // Adiciona ao head
+      const primeiroScript = document.getElementsByTagName('script')[0];
+      primeiroScript.parentNode.insertBefore(script, primeiroScript);
+      
+      // Sinaliza que o Clarity foi carregado
+      clarityCarregado = true;
+      
+      console.log('Microsoft Clarity carregado com sucesso');
+    } catch (erro) {
+      console.error('Erro ao carregar Microsoft Clarity:', erro);
+    }
+  }
+  
+  /**
+   * Carrega o script do PostHog dinamicamente
+   */
+  function carregarPostHog() {
+    if (posthogCarregado) return;
+    
+    try {
+      // Inicializa o objeto posthog
+      window.posthog = window.posthog || [];
+      
+      // Função para carregar o PostHog
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      
+      // Inicializa o PostHog
+      posthog.init(POSTHOG_API_KEY, {
+        api_host: POSTHOG_API_HOST,
+        person_profiles: 'identified_only',
+      });
+      
+      // Sinaliza que o PostHog foi carregado
+      posthogCarregado = true;
+      
+      console.log('PostHog carregado com sucesso');
+    } catch (erro) {
+      console.error('Erro ao carregar PostHog:', erro);
+    }
+  }
+  
+  /**
+   * Ativa o consentimento no Clarity e PostHog
+   */
+  function ativarConsentimento() {
+    // Pequeno atraso para garantir que os scripts foram carregados
+    setTimeout(() => {
+      // Ativa consentimento no Clarity
+      if (typeof window.clarity === 'function') {
+        window.clarity('consent');
+        console.log('Consentimento ativado no Microsoft Clarity');
+      }
+      
+      // Ativa consentimento no PostHog (opt_in_capturing)
+      if (typeof window.posthog === 'object' && typeof window.posthog.opt_in_capturing === 'function') {
+        window.posthog.opt_in_capturing();
+        console.log('Consentimento ativado no PostHog');
+      }
+    }, 1000);
+  }
+  
+  /**
+   * Carrega todas as ferramentas de tracking
+   */
+  function carregarFerramentas() {
+    carregarClarity();
+    carregarPostHog();
+    ativarConsentimento();
+  }
+  
+  /**
+   * Inicializa o tracking caso o consentimento já exista
+   */
+  function inicializarComConsentimentoExistente() {
+    try {
+      const consentimentoExistente = localStorage.getItem('agencia_m2a_lgpd_consentimento') === 'aceito';
+      
+      if (consentimentoExistente) {
+        carregarFerramentas();
+      }
+    } catch (erro) {
+      console.error('Erro ao verificar consentimento para tracking:', erro);
+    }
+  }
+  
+  // Interface pública
+  return {
+    inicializar: inicializarComConsentimentoExistente,
+    carregar: carregarFerramentas,
+    consentir: ativarConsentimento
+  };
+})();
 
 /**
  * Gerencia a navegação, menu mobile e comportamento do cabeçalho

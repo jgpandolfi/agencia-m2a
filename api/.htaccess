@@ -1,0 +1,39 @@
+# Impedir listagem de diretórios
+Options -Indexes
+
+# Proteger config.php
+<FilesMatch "^config\.php$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Proteger .env com regra que permite acesso interno do servidor
+<Files ~ "^\.env">
+  # Bloquear acesso externo, mas permitir leitura pelo PHP
+  Order deny,allow
+  Deny from all
+  # Permitir apenas ao servidor local
+  Allow from 127.0.0.1 ::1
+</Files>
+
+# Restringir métodos HTTP permitidos
+<LimitExcept POST GET OPTIONS>
+  Deny from all
+</LimitExcept>
+
+# Adicionar cabeçalhos de segurança
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Content-Security-Policy "default-src 'self'"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Redirecionar solicitações para os endpoints corretos
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^form/?$ processar-formulario.php [QSA,L]
+RewriteRule ^tracking/?$ registrar-visitante.php [QSA,L]
+RewriteRule ^verify-visitor/?$ verificar-visitante.php [QSA,L]

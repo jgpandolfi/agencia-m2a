@@ -582,7 +582,7 @@ const inicializarAnimacoesScroll = () => {
   // Seleciona elementos para animar
   const elementosAnimados = document.querySelectorAll(
     '.titulo-secao, .subtitulo-secao, .card-servico, .item-vmv, ' +
-    '.item-portfolio, .cliente, .form-contato, .info-contato'
+    '.item-portfolio, .cliente, .card-depoimento, .form-contato, .info-contato'
   );
   
   // Verifica se os elementos estão visíveis na viewport

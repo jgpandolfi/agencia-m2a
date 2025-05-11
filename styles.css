@@ -850,7 +850,152 @@
     animation-play-state: paused;
   }
   
-  /* ----------------- 10. Contato ----------------- */
+  /* ----------------- 10. Depoimentos de Clientes ----------------- */
+  .secao-depoimentos {
+    background-color: var(--cor-bg-primaria);
+    padding: var(--espaco-padrao) 0;
+    padding-top: 0;
+  }
+
+  .grid-depoimentos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 3rem;
+    margin-top: var(--espaco-pequeno);
+  }
+
+  .card-depoimento {
+    background-color: var(--cor-bg-cartao);
+    border-radius: var(--borda-radius);
+    padding: 3rem;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-depoimento:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--sombra-elevada);
+  }
+
+  .foto-cliente {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .foto-cliente img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--cor-destaque);
+    box-shadow: var(--sombra-suave);
+  }
+
+  .conteudo-depoimento {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .texto-depoimento {
+    position: relative;
+    font-style: italic;
+    color: var(--cor-texto-secundaria);
+    margin-bottom: 2rem;
+    flex-grow: 1;
+    padding: 0 1.5rem;
+    line-height: 1.7;
+  }
+
+  .texto-depoimento::before,
+  .texto-depoimento::after {
+    content: '"';
+    font-size: 4rem;
+    position: absolute;
+    color: var(--cor-destaque);
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .texto-depoimento::before {
+    top: -2rem;
+    left: -1rem;
+  }
+
+  .texto-depoimento::after {
+    bottom: -3rem;
+    right: -1rem;
+  }
+
+  .info-cliente {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cor-borda);
+  }
+
+  .nome-cliente {
+    font-size: 1.8rem;
+    color: var(--cor-texto-primaria);
+    margin-bottom: 0.5rem;
+  }
+
+  .cargo-cliente {
+    color: var(--cor-destaque);
+    font-size: 1.4rem;
+    margin-bottom: 0;
+  }
+
+  /* Ajustes de responsividade para a seção de depoimentos */
+  @media (max-width: 992px) {
+    .grid-depoimentos {
+      grid-template-columns: 1fr;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .card-depoimento {
+      padding: 2.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .card-depoimento {
+      padding: 2rem;
+    }
+    
+    .foto-cliente img {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .texto-depoimento {
+      font-size: 1.5rem;
+      padding: 0 1rem;
+    }
+    
+    .texto-depoimento::before,
+    .texto-depoimento::after {
+      font-size: 3rem;
+    }
+    
+    .nome-cliente {
+      font-size: 1.6rem;
+    }
+    
+    .cargo-cliente {
+      font-size: 1.3rem;
+    }
+  }
+
+  /* ----------------- 11. Contato ----------------- */
   .secao-contato {
     background-color: var(--cor-bg-secundaria);
   }
@@ -989,7 +1134,7 @@
   }
   
 
-  /* ----------------- 11. Animação de Contorno Formulário ----------------- */
+  /* ----------------- 12. Animação de Contorno Formulário ----------------- */
   .form-destacado {
     border: 1px solid var(--cor-magenta);
     box-shadow: 0 0 30px 8px rgba(214, 36, 84, 0.9);
@@ -998,7 +1143,7 @@
     transition: none !important; /* Previne que outras transições interfiram */
   }
 
-  /* ----------------- 12. Rodapé ----------------- */
+  /* ----------------- 13. Rodapé ----------------- */
   .rodape {
     background-color: var(--cor-bg-secundaria);
     padding: 6rem 0 2rem;
@@ -1062,7 +1207,7 @@
     font-weight: 700;
   }
   
-  /* ----------------- 13. Botões Flutuantes ----------------- */
+  /* ----------------- 14. Botões Flutuantes ----------------- */
   .botao-whatsapp {
     position: fixed;
     bottom: 3rem;
@@ -1115,7 +1260,7 @@
     transform: translateY(-5px);
   }
   
-  /* ----------------- 14. Responsividade ----------------- */
+  /* ----------------- 15. Responsividade ----------------- */
   @media (max-width: 1200px) {
     html {
       font-size: 58%;
@@ -1265,7 +1410,7 @@
     }
   }
   
-  /* ----------------- 15. Animações de navegação ----------------- */
+  /* ----------------- 16. Animações de navegação ----------------- */
   @keyframes aparecerDeBaixo {
     from {
       opacity: 0;
@@ -1294,7 +1439,7 @@
     100% { transform: translateX(0); }
   }
 
-/* ----------------- 16. Cursor Personalizado ----------------- */
+/* ----------------- 17. Cursor Personalizado ----------------- */
 body {
   cursor: none; /* Esconde o cursor padrão */
 }
@@ -1370,7 +1515,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 17. Barra de Carregamento ----------------- */
+/* ----------------- 18. Barra de Carregamento ----------------- */
 #barra-carregamento-container {
   position: fixed;
   top: 0;
@@ -1410,7 +1555,7 @@ input, textarea {
   opacity: 1; /* Brilho aparece ao passar o mouse */
 }
 
-/* ----------------- 18. Tooltips Personalizados ----------------- */
+/* ----------------- 19. Tooltips Personalizados ----------------- */
 .tooltip-container {
   position: fixed;
   z-index: 10000;
@@ -1473,7 +1618,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 19. Modal do Portfólio ----------------- */
+/* ----------------- 20. Modal do Portfólio ----------------- */
 .modal {
   display: none;
   position: fixed;
@@ -1632,7 +1777,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 20. Modal de Consentimento LGPD ----------------- */
+/* ----------------- 21. Modal de Consentimento LGPD ----------------- */
 .lgpd-modal {
   position: fixed;
   top: 0;
@@ -1750,7 +1895,7 @@ input, textarea {
   }
 }
 
-/* ----------------- 21. Acessibilidade ----------------- */
+/* ----------------- 22. Acessibilidade ----------------- */
 
 /* Reduzir movimentos para usuários que preferem menos animações */
 @media (prefers-reduced-motion: reduce) {

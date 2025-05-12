@@ -4,6 +4,10 @@
 Website profissional desenvolvido com HTML, CSS e JavaScript puro para a Agência m2a, uma agência de marketing 360° que oferece soluções estratégicas em marketing digital. O site conta com design moderno em tema escuro, totalmente responsivo e repleto de recursos interativos que proporcionam uma experiência de usuário excepcional.
 </p>
 
+<p align="center">
+<a href="https://agenciam2a.com.br/?utm_source=Projeto-Site-m2a-GitHub" target="_blank">🌐 Acesse o site em produção</a> e aproveite para conhecer todas as soluções e serviços oferecidos pela Agência m2a em um ambiente digital estrategicamente desenvolvido para proporcionar a melhor experiência ao usuário.
+</p>
+
 ## 💡 Sobre o Projeto
 
 Este website foi desenvolvido para atender às necessidades da Agência m2a, destacando sua identidade visual e serviços oferecidos. O projeto foi construído seguindo o conceito de **mobile-first** e incorpora as mais modernas técnicas de desenvolvimento web para garantir:
@@ -23,13 +27,15 @@ Este projeto foi desenvolvido utilizando exclusivamente:
 - **HTML5** semântico
 - **CSS3** moderno com variáveis e flexbox/grid
 - **JavaScript** puro (Vanilla JS) com ES6+
+- **MySQL** para armazenamento e gerenciamento de dados
+- **Sistema de variáveis de ambiente** com arquivos .env para configurações seguras
 - **Git e GitHub** para versionamento
 
 Sem dependências de frameworks ou bibliotecas externas, demonstrando maestria no desenvolvimento com tecnologias fundamentais da web.
 
 ## 💻 Técnicas e Boas Práticas
 
-### **Arquitetura e Organização**
+### 🗂️ **Arquitetura e Organização**
 
 - **Padrão de Módulo Revelador (Revealing Module Pattern)** para encapsulamento
 - **Código modular e componentizado** para facilitar manutenção
@@ -37,22 +43,31 @@ Sem dependências de frameworks ou bibliotecas externas, demonstrando maestria n
 - **CSS organizado em seções numeradas** (20+ seções bem definidas)
 - **Variáveis CSS** para consistência visual e manutenibilidade
 
-### **Performance**
+### ⏱️ **Performance**
 
 - **Lazy loading** de imagens
 - **Debounce e throttling** para eventos de scroll e resize
 - **Imagens em formato WebP** com compressão otimizada
 - **Carregamento condicional** de recursos quando necessário
-- **Minificação** de CSS e JavaScript para produção
 
-### **Segurança**
+### 🛡️ **Segurança**
 
 - **Validação e sanitização** de inputs de formulários
 - **LocalStorage** com tratamento de exceções para dados de consentimento
 - **LGPD compliant** com modal de consentimento e gestão de cookies
 - **Tratamento defensivo** para todas as operações do DOM
+- **Sistema de variáveis de ambiente** para proteção de credenciais
+- **Headers de segurança** configurados para prevenção de ataques
+- **Rate limiting** para prevenção de spam e ataques de força bruta
+- **CORS configurado** para permitir apenas domínios autorizados
 
-### **Acessibilidade**
+### **🎨 Interface e Experiência do Usuário (UI/UX)**
+
+- **Consistência Visual** com uso sistemático de variáveis CSS para cores, espaçamentos e comportamentos
+- **Feedback Visual** através de preloaders, tooltips, e estados interativos distintos
+- **Hierarquia de Informação** com tipografia escalável e seções claramente delimitadas
+
+### 🧏 **Acessibilidade**
 
 - **Contraste adequado** para leitura em tema escuro
 - **Semântica HTML5** apropriada para leitores de tela
@@ -94,19 +109,44 @@ Sem dependências de frameworks ou bibliotecas externas, demonstrando maestria n
 - **Feedback visual** de validação para usuários
 - **Submissão assíncrona** com tratamento de erros
 
+### **📊 Sistema Próprio de Rastreamento de Visitantes**
+
+- **Tracker próprio** com identificação única persistente via UUID
+- **Monitoramento de engajamento** com contagem de cliques totais e em elementos interativos
+- **Geolocalização automática** baseada no IP do visitante
+- **Captura de UTM parameters** para análise de campanhas
+- **Duração de sessão** com precisão ao segundo
+- **Notificações via Discord** para novos visitantes em tempo real
+- **Persistência de identificação** entre visitas para análise de retorno
+
 ## 🔧 Estrutura do Projeto
 
 O projeto segue uma estrutura clara e organizada:
 ```
 📁 raiz
-┣ 📄 index.html # Documento HTML principal
-┣ 📄 styles.css # Estilos CSS organizados em seções
-┣ 📄 scripts.js # JavaScript modular com padrões modernos
+┣ 📁 api # Backend PHP para processamento do site
 ┣ 📁 assets
-┃ ┣ 📁 img # Imagens otimizadas em WebP
-┃ ┗ 📁 icones # Ícones recorrentes otimizados
-┗ 📄 README.md # Documentação do projeto
+┃ ┣ 📁 icones # Ícones recorrentes otimizados
+┃ ┗ 📁 img # Imagens otimizadas em WebP
+┃   ┣ 📁 clientes # Logos de clientes para carrossel
+┃   ┣ 📁 depoimentos # Fotos de clientes para depoimentos
+┃   ┗ 📁 portfolio # Imagens de trabalhos realizados
+┣ 📄 .gitignore # Configuração de arquivos ignorados pelo Git
+┣ 📄 index.html # Documento HTML principal
+┣ 📄 README.md # Documentação do projeto
+┣ 📄 scripts.js # JavaScript modular com padrões modernos
+┗ 📄 styles.css # Estilos CSS organizados em seções
 ```
+
+## 🔄 Integração Backend-Frontend
+
+- **API RESTful própria** para processamento de dados
+- **Sistema de formulários** com validação em tempo real e no servidor
+- **Proteção CSRF** em todas as requisições do formulário
+- **Tratamento de erro robusto** com feedback visual ao usuário
+- **Webhooks para Discord** para notificação instantânea de conversões
+- **Sanitização e validação** de dados em ambas as pontas
+- **Sistema de logs** para monitoramento e diagnóstico de problemas
 
 ## 🚦 Performance e Otimização
 
@@ -116,6 +156,15 @@ O projeto segue uma estrutura clara e organizada:
 - **Cache inteligente** para recursos estáticos
 - **Animações otimizadas** usando propriedades que não causam repaints
 
+## 🔐 Privacidade e Conformidade LGPD
+
+- **Modal de consentimento LGPD** com fluxo completo de aceite ou rejeição
+- **Visualização dos termos de uso** integrada ao modal de consentimento
+- **Armazenamento seguro** de preferências em localStorage com criptografia
+- **Ativação condicional** de recursos de tracking apenas após consentimento
+- **Notificações visuais** de política de cookies
+- **APIs com proteção de dados** para tratamento seguro de informações pessoais
+
 ## 📋 Implementações Destacadas
 
 - **Sistema de Modal LGPD**: Conforme legislação brasileira, com armazenamento seguro de consentimento
@@ -123,6 +172,10 @@ O projeto segue uma estrutura clara e organizada:
 - **Gerenciador de Portfólio**: Utilizando padrão de módulo revelador para melhor organização
 - **Barra de Carregamento**: Feedback visual preciso durante operações assíncronas
 - **Máscara de Telefone**: Formatação automática seguindo padrões brasileiros
+- **Carregamento Progressivo de Portfólio**: Interface com feedback visual durante carregamento de mais itens
+- **Integração com Analytics Externos**: Microsoft Clarity e PostHog para análise avançada de comportamento
+- **Rastreador de Visitantes**: Implementação proprietária para análise de comportamento respeitando LGPD
+- **Sistema de Webhooks Discord**: Notificações em tempo real de novos leads e visitantes
 
 ## 🧾 Licença
 

@@ -688,6 +688,66 @@ const GerenciadorPortfolio = (function() {
   // Variáveis privadas
   let trabalhosAdicionais = [
       {
+          imagem: 'assets/img/portfolio/plannus-agencia-de-viagens.webp',
+          titulo: 'Campanha Pacote de Viagem',
+          cliente: 'Plannus Agência de Viagens'
+      },
+      {
+          imagem: 'assets/img/portfolio/micali-seguros-seguro-residencial.webp',
+          titulo: 'Campanha Seguro Residencial',
+          cliente: 'Micali Seguros'
+      },
+      {
+          imagem: 'assets/img/portfolio/plannus-agencia-de-viagens-dia-dos-pais.webp',
+          titulo: 'Campanha Dia dos Pais',
+          cliente: 'Plannus Agência de Viagens'
+      },
+      {
+          imagem: 'assets/img/portfolio/sueli-personal-organizer-antes-e-depois.webp',
+          titulo: 'Antes e Depois Personal Organizer',
+          cliente: 'Sueli Personal Organizer'
+      },
+      {
+          imagem: 'assets/img/portfolio/pedroso-e-silva-advogados-dia-das-maes.webp',
+          titulo: 'Campanha Dia das Mães',
+          cliente: 'Pedroso e Silva Advogados'
+      },
+      {
+          imagem: 'assets/img/portfolio/festa-universitaria-atletica-descubra-seu-par.webp',
+          titulo: 'Campanha Festa Universitária',
+          cliente: 'Atlética Unesp Jaboticabal'
+      },
+      {
+          imagem: 'assets/img/portfolio/steel-house-aco-galvanizado.webp',
+          titulo: 'Aço Galvanizado',
+          cliente: 'Steel House'
+      },
+      {
+          imagem: 'assets/img/portfolio/prit-app-pet.webp',
+          titulo: 'Campanha Download de App',
+          cliente: 'Prit App'
+      },
+      {
+          imagem: 'assets/img/portfolio/easy-nutri-whey-protein.webp',
+          titulo: 'Venda de Whey Protein',
+          cliente: 'Easy Nutri'
+      },
+      {
+          imagem: 'assets/img/portfolio/joao-steinle-nutricionista.webp',
+          titulo: 'Apresentação Nutricionista',
+          cliente: 'João Steinle'
+      },
+      {
+          imagem: 'assets/img/portfolio/prit-app-8-dicas-personal-trainer.webp',
+          titulo: 'Campanha Download de App',
+          cliente: 'Prit App'
+      },
+      {
+          imagem: 'assets/img/portfolio/onetwothree-escola-de-ingles.webp',
+          titulo: 'Anúncio Escola de Inglês',
+          cliente: 'OneTwoThree'
+      },
+      {
           imagem: 'assets/img/portfolio/prit-app-eua-ingles.webp',
           titulo: 'Campanha Download de Apps EUA',
           cliente: 'Prit App'
@@ -756,11 +816,14 @@ function carregarTrabalhos() {
   
   // Adiciona cada trabalho à galeria
   trabalhosAdicionais.forEach((trabalho, indice) => {
-      const novoItem = document.createElement('div');
-      novoItem.className = 'item-portfolio';
-      
-      // Adicionar índice como atributo data para rastreamento
-      novoItem.dataset.indice = document.querySelectorAll('.item-portfolio').length + indice;
+    const novoItem = document.createElement('div');
+    novoItem.className = 'item-portfolio';
+    
+    // Adicionar índice como atributo data para rastreamento
+    novoItem.dataset.indice = document.querySelectorAll('.item-portfolio').length + indice;
+    
+    // Adiciona o atributo data-tooltip
+    novoItem.setAttribute('data-tooltip', 'Clique para expandir');
       
       // Cria o HTML do item com cliente formatado
       const clienteFormatado = trabalho.cliente.replace('Cliente:', '<b>Cliente:</b>');
@@ -825,6 +888,12 @@ function carregarTrabalhos() {
       botaoCarregarMais.classList.add('desabilitado');
   }
   
+  // Associar eventos de cursor aos novos itens
+  if (typeof window.associarEventosCursor === 'function') {
+    const novosItens = document.querySelectorAll('.item-portfolio');
+    window.associarEventosCursor(novosItens);
+  }
+
   // Atualiza os handlers
   if (modalHandler) modalHandler.atualizarItens();
   if (buscaHandler) buscaHandler.atualizarItens();
@@ -1207,44 +1276,43 @@ const inicializarCursorPersonalizado = () => {
   
   // SVG da seta personalizada (formato triangular)
   cursorPrincipal.innerHTML = `
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path stroke="#f1f1f1" stroke-width="1.5" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"</path></svg>
-`;
-  
+  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path stroke="#f1f1f1" stroke-width="1.5" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"</path></svg>
+  `;
+
   document.body.appendChild(cursorPrincipal);
 
   let posX = 0, posY = 0;
   document.addEventListener('mousemove', e => {
     posX = e.clientX;
     posY = e.clientY;
-    
     cursorPrincipal.style.left = `${posX}px`;
     cursorPrincipal.style.top = `${posY}px`;
   });
 
   // Elementos clicáveis
   const elementosClicaveis = document.querySelectorAll('a, button, .botao-primario, .item-portfolio, [role="button"]');
-  
-  // Oculta o cursor personalizado sobre elementos clicáveis
-  elementosClicaveis.forEach(el => {
-    el.addEventListener('mouseover', () => {
-      cursorPrincipal.classList.add('sobre-clicavel');
+
+  // Função para associar eventos de cursor a elementos
+  const associarEventosCursor = (elementos) => {
+    elementos = Array.isArray(elementos) ? elementos : Array.from(elementos);
+    elementos.forEach(el => {
+      el.addEventListener('mouseover', () => {
+        cursorPrincipal.classList.add('sobre-clicavel');
+      });
+      el.addEventListener('mouseout', () => {
+        cursorPrincipal.classList.remove('sobre-clicavel');
+      });
     });
-    
-    el.addEventListener('mouseout', () => {
-      cursorPrincipal.classList.remove('sobre-clicavel');
-    });
-  });
+  };
+
+  // Associar aos elementos iniciais
+  associarEventosCursor(elementosClicaveis);
 
   // Oculta o cursor personalizado sobre campos de texto
-  document.querySelectorAll('input, textarea').forEach(el => {
-    el.addEventListener('mouseover', () => {
-      cursorPrincipal.classList.add('sobre-clicavel');
-    });
-    
-    el.addEventListener('mouseout', () => {
-      cursorPrincipal.classList.remove('sobre-clicavel');
-    });
-  });
+  associarEventosCursor(document.querySelectorAll('input, textarea'));
+
+  // Expor a função para uso em outras partes do código
+  window.associarEventosCursor = associarEventosCursor;
 };
 
 /**
@@ -1257,9 +1325,6 @@ const GerenciadorTooltips = (function() {
   let elementoAtual = null;
   let mobileTimerId = null;
   let tooltipVisivel = false;
-  let lastMouseX = 0;
-  let lastMouseY = 0;
-  let scrollTimeout = null;
   
   /**
    * Inicializa os tooltips e configura eventos
@@ -1269,108 +1334,86 @@ const GerenciadorTooltips = (function() {
     tooltipContainer = document.getElementById('tooltip-personalizado');
     tooltipTexto = tooltipContainer.querySelector('.tooltip-texto');
     
-    // Detectar todos elementos com tooltips
-    const elementosComTooltip = document.querySelectorAll('[data-tooltip]');
-    
-    // Adicionar eventos para cada elemento
-    elementosComTooltip.forEach(elemento => {
-      // Em dispositivos desktop
-      elemento.addEventListener('mouseenter', e => mostrarTooltip(e, elemento));
-      elemento.addEventListener('mouseleave', esconderTooltip);
-      elemento.addEventListener('mousemove', e => posicionarTooltip(e));
-      
-      // Em dispositivos mobile (touch)
-      elemento.addEventListener('touchstart', e => {
-        // Prevenir gestos de scroll padrão
-        e.preventDefault();
-        
-        // Se já tiver um tooltip aberto em outro elemento, fecha
-        if (elementoAtual && elementoAtual !== elemento) {
-          esconderTooltip();
-        }
-        
-        // Toggle do tooltip atual
-        if (elementoAtual === elemento) {
-          esconderTooltip();
-        } else {
-          mostrarTooltip(e, elemento);
-          
-          // Esconder após um tempo em dispositivos touch
-          clearTimeout(mobileTimerId);
-          mobileTimerId = setTimeout(esconderTooltip, 3000);
-        }
-      });
-      
-      // Acessibilidade via teclado
-      elemento.addEventListener('focus', e => mostrarTooltip(e, elemento));
-      elemento.addEventListener('blur', esconderTooltip);
-      
-      // Garantir que os elementos possam receber foco
-      if (!elemento.getAttribute('tabindex')) {
-        elemento.setAttribute('tabindex', '0');
-      }
-      
-      // Adicionar atributos de acessibilidade
-      elemento.setAttribute('aria-describedby', 'tooltip-personalizado');
-    });
-    
-    // Esconder tooltip ao clicar em qualquer lugar (para dispositivos touch)
-    document.addEventListener('touchstart', e => {
+    // Eventos delegados para todo o documento
+    document.addEventListener('mouseover', gerenciarMouseOver);
+    document.addEventListener('mouseout', gerenciarMouseOut);
+    document.addEventListener('mousemove', gerenciarMouseMove);
+    document.addEventListener('touchstart', gerenciarTouchStart, {passive: false});
+    document.addEventListener('scroll', esconderTooltip);
+    document.addEventListener('click', function(e) {
       if (tooltipVisivel && (!elementoAtual || !elementoAtual.contains(e.target))) {
         esconderTooltip();
       }
     });
-    
-    // Esconder tooltip ao rolar a página
-    document.addEventListener('scroll', () => {
-      if (tooltipVisivel) {
-        esconderTooltip();
-      }
-    });
-    
-    // Rastrear posição do mouse
-    document.addEventListener('mousemove', (e) => {
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-    });
-    
-    // Verificar elementos sob o cursor após o scroll
-    window.addEventListener('scroll', () => {
-      // Esconder tooltip durante o scroll para evitar posicionamento incorreto
-      if (tooltipVisivel) {
-        esconderTooltip();
-      }
-      
-      // Usando debounce para melhorar performance
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        verificarElementosSobCursor();
-      }, 200); // 200ms após parar de rolar
-    });
   }
   
   /**
-   * Verifica se há elementos com tooltip sob o cursor
+   * Gerencia eventos mouseover delegados
    * @private
    */
-  function verificarElementosSobCursor() {
-    if (lastMouseX === 0 && lastMouseY === 0) return;
+  function gerenciarMouseOver(e) {
+    const elemento = encontrarElementoComTooltip(e.target);
+    if (elemento && elemento !== elementoAtual) {
+      mostrarTooltip(e, elemento);
+    }
+  }
+  
+  /**
+   * Gerencia eventos mouseout delegados
+   * @private
+   */
+  function gerenciarMouseOut(e) {
+    const elementoRelacionado = e.relatedTarget;
+    if (elementoAtual && !elementoAtual.contains(elementoRelacionado)) {
+      esconderTooltip();
+    }
+  }
+  
+  /**
+   * Gerencia eventos mousemove delegados
+   * @private
+   */
+  function gerenciarMouseMove(e) {
+    if (tooltipVisivel) {
+      posicionarTooltip(e);
+    }
+  }
+  
+  /**
+   * Gerencia eventos touchstart delegados
+   * @private
+   */
+  function gerenciarTouchStart(e) {
+    const elemento = encontrarElementoComTooltip(e.target);
+    if (!elemento) return;
     
-    // Obtém o elemento na posição atual do mouse
-    const elementoSobCursor = document.elementFromPoint(lastMouseX, lastMouseY);
+    // Previne scroll apenas para elementos com tooltip
+    e.preventDefault();
     
-    if (!elementoSobCursor) return;
-    
-    // Verifica se o elemento ou algum de seus pais tem data-tooltip
-    let elemento = elementoSobCursor;
+    if (elementoAtual === elemento) {
+      esconderTooltip();
+    } else {
+      if (elementoAtual) {
+        esconderTooltip();
+      }
+      mostrarTooltip(e, elemento);
+      clearTimeout(mobileTimerId);
+      mobileTimerId = setTimeout(esconderTooltip, 3000);
+    }
+  }
+  
+  /**
+   * Encontra o elemento com tooltip ou seu ancestral mais próximo
+   * @private
+   */
+  function encontrarElementoComTooltip(elemento) {
     while (elemento && elemento !== document.body) {
       if (elemento.hasAttribute('data-tooltip')) {
-        // Mostra o tooltip para o elemento encontrado
-        mostrarTooltip({ clientX: lastMouseX, clientY: lastMouseY }, elemento);
-        return;
+        return elemento;
       }
       elemento = elemento.parentElement;
     }
+    return null;
   }
   
   /**
@@ -1379,7 +1422,6 @@ const GerenciadorTooltips = (function() {
    */
   function mostrarTooltip(evento, elemento) {
     const conteudoTooltip = elemento.getAttribute('data-tooltip');
-    
     if (!conteudoTooltip) return;
     
     tooltipTexto.innerHTML = conteudoTooltip;
@@ -1399,6 +1441,8 @@ const GerenciadorTooltips = (function() {
    * @private
    */
   function esconderTooltip() {
+    if (!tooltipVisivel) return;
+    
     tooltipContainer.classList.remove('visivel');
     tooltipContainer.setAttribute('aria-hidden', 'true');
     elementoAtual = null;
@@ -1416,18 +1460,16 @@ const GerenciadorTooltips = (function() {
     const isTouchDevice = evento.type === 'touchstart';
     
     if (isTouchDevice) {
-      // Posicionamento para dispositivos touch (centralizado acima do elemento)
+      // Posicionamento para dispositivos touch
       const rect = elementoAtual.getBoundingClientRect();
       const elementoX = rect.left + (rect.width / 2);
       const elementoY = rect.top;
-      
       tooltipContainer.style.left = `${elementoX}px`;
       tooltipContainer.style.top = `${elementoY - 10}px`;
     } else {
-      // Posicionamento seguindo o cursor
+      // Posicionamento para mouse
       const mouseX = evento.clientX;
       const mouseY = evento.clientY;
-      
       tooltipContainer.style.left = `${mouseX}px`;
       tooltipContainer.style.top = `${mouseY - 10}px`;
     }
@@ -1439,23 +1481,7 @@ const GerenciadorTooltips = (function() {
    */
   function adicionarTooltip(elemento, texto) {
     if (!elemento || !texto) return;
-    
     elemento.setAttribute('data-tooltip', texto);
-    
-    // Remover eventos existentes para evitar duplicação
-    elemento.removeEventListener('mouseenter', e => mostrarTooltip(e, elemento));
-    elemento.removeEventListener('mouseleave', esconderTooltip);
-    
-    // Adicionar novos eventos
-    elemento.addEventListener('mouseenter', e => mostrarTooltip(e, elemento));
-    elemento.addEventListener('mouseleave', esconderTooltip);
-    elemento.addEventListener('mousemove', e => posicionarTooltip(e));
-    
-    // Acessibilidade
-    if (!elemento.getAttribute('tabindex')) {
-      elemento.setAttribute('tabindex', '0');
-    }
-    elemento.setAttribute('aria-describedby', 'tooltip-personalizado');
   }
   
   // Interface pública
@@ -1885,17 +1911,30 @@ const inicializarModalPortfolio = () => {
   const atualizarItens = () => {
     itensPortfolio = document.querySelectorAll('.item-portfolio');
     
-    // Adiciona evento de clique nos novos itens
+    // Preservar atributo data-tooltip e outros dados importantes
     itensPortfolio.forEach((item, indice) => {
-      // Remove evento anterior para evitar duplicação
-      item.replaceWith(item.cloneNode(true));
+        const dataTooltip = item.getAttribute('data-tooltip');
+        const clonado = item.cloneNode(true);
+        
+        // Preservar tooltip e dados importantes
+        if (dataTooltip) {
+            clonado.setAttribute('data-tooltip', dataTooltip);
+        }
+        
+        // Substituir o item original pelo clone
+        item.replaceWith(clonado);
     });
     
-    // Reassocia eventos após clonagem
+    // Reassocia eventos
     itensPortfolio = document.querySelectorAll('.item-portfolio');
     itensPortfolio.forEach((item, indice) => {
-      item.addEventListener('click', () => abrirModal(indice));
+        item.addEventListener('click', () => abrirModal(indice));
     });
+    
+    // Reassocia eventos do cursor personalizado
+    if (typeof window.associarEventosCursor === 'function') {
+        window.associarEventosCursor(itensPortfolio);
+    }
   };
   
   // Registra este handler com o GerenciadorPortfolio

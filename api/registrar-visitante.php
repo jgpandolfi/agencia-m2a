@@ -6,7 +6,7 @@
  * valida, sanitiza e armazena no banco de dados MySQL.
  * 
  * @author Jota / José Guilherme Pandolfi - Agência m2a
- * @version 1.0
+ * @version 1.1
  */
 
 // Definir token de acesso seguro
@@ -15,11 +15,6 @@ define('ACESSO_SEGURO', true);
 // Incluir arquivos necessários
 require_once 'config.php';
 require_once 'funcoes.php';
-
-// Webhook para o Discord (carregado do .env com fallback para config.php)
-define('DISCORD_WEBHOOK_URL', !empty($_ENV['DISCORD_WEBHOOK_VISITANTES']) 
-    ? $_ENV['DISCORD_WEBHOOK_VISITANTES'] 
-    : DISCORD_WEBHOOK_VISITANTES);
 
 // Lista de domínios permitidos para o CORS
 $dominiosPermitidos = [
@@ -56,9 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respostaJson(['erro' => 'Método não permitido'], 405);
 }
 
+// Log para monitoramento
+registrarEvento("Requisição recebida de: " . obterIPCliente(), "INFO");
+
 // Obter e decodificar dados JSON do corpo da requisição
 $corpoRequisicao = file_get_contents('php://input');
 $dadosVisitante = json_decode($corpoRequisicao, true);
+
+// Log para debug
+registrarEvento("Dados recebidos: " . $corpoRequisicao, "DEBUG");
 
 // Verificar se os dados foram recebidos corretamente
 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -86,74 +87,104 @@ $utmCampaign = !empty($dadosVisitante['utm_campaign']) ? sanitizarEntrada($dados
 $utmContent = !empty($dadosVisitante['utm_content']) ? sanitizarEntrada($dadosVisitante['utm_content']) : '';
 $utmTerm = !empty($dadosVisitante['utm_term']) ? sanitizarEntrada($dadosVisitante['utm_term']) : '';
 
+// Obter dados de navegador
+$navegador = sanitizarEntrada($dadosVisitante['navegador'] ?? '');
+$sistemaOperacional = sanitizarEntrada($dadosVisitante['sistema_operacional'] ?? '');
+$marcaDispositivo = sanitizarEntrada($dadosVisitante['marca_dispositivo'] ?? '');
+$movel = isset($dadosVisitante['movel']) ? (int)$dadosVisitante['movel'] : 0;
+
 // Obter dados de rastreamento automáticos
 $ipCliente = obterIPCliente();
-$ehMovel = eDispositivoMovel();
-$navegador = obterNavegador();
-$sistemaOperacional = obterSistemaOperacional();
-$marcaDispositivo = obterMarcaDispositivo();
-
-// Obter geolocalização baseada no IP
 $infoGeo = obterGeoInfoIP($ipCliente);
 
-// Log para monitoramento (opcional)
-registrarEvento("Novo visitante registrado - UUID: $uuid", "INFO");
-
-// Função para enviar notificação ao Discord (adicionar antes do bloco try-catch da conexão com o banco)
+/**
+ * Função para enviar notificação ao Discord quando um novo visitante é registrado
+ * @param array $dadosVisitante Dados do visitante
+ * @return bool Sucesso ou falha no envio
+ */
 function enviarNotificacaoDiscordVisitante($dadosVisitante) {
+    registrarEvento("Tentando enviar notificação para Discord", "INFO");
+    
+    // Verificar se todos os dados necessários existem para evitar erros
+    if (empty($dadosVisitante['uuid'])) {
+        registrarEvento("Dados insuficientes para notificação Discord", "ERRO");
+        return false;
+    }
+    
     $corMagenta = 14032980; // #D62454 em decimal
     $dataHora = date('d/m/Y H:i:s');
     
+    // Construção corrigida do embed
     $embed = [
         'title' => '🌐 Novo Visitante Registrado',
         'color' => $corMagenta,
-        'fields' => [
-            [
-                'name' => '🆔 UUID',
-                'value' => "`{$dadosVisitante['uuid']}`",
-                'inline' => false
-            ],
-            [
-                'name' => '📍 Localização',
-                'value' => "{$dadosVisitante['cidade']}, {$dadosVisitante['estado']}, {$dadosVisitante['pais']}",
-                'inline' => true
-            ],
-            [
-                'name' => '📡 IP e Provedor',
-                'value' => "`{$dadosVisitante['ip']}`\n{$dadosVisitante['provedor']}",
-                'inline' => true
-            ],
-            [
-                'name' => '💻 Dispositivo',
-                'value' => "{$dadosVisitante['marca_dispositivo']} ({$dadosVisitante['sistema_operacional']})",
-                'inline' => true
-            ],
-            [
-                'name' => '🌐 Navegador',
-                'value' => $dadosVisitante['web_browser'],
-                'inline' => true
-            ],
-            [
-                'name' => '⏱️ Duração Sessão',
-                'value' => "{$dadosVisitante['duracao_sessao']} segundos",
-                'inline' => true
-            ],
-            [
-                'name' => '🔗 Origem',
-                'value' => $dadosVisitante['referrer'] ? "[Link]({$dadosVisitante['referrer']})" : 'Direto',
-                'inline' => true
-            ]
-        ],
-        'footer' => [
-            'text' => "Registrado em: $dataHora"
-        ]
+        'description' => 'Novo visitante detectado no site da Agência m2a',
+        'fields' => []
     ];
-
+    
+    // Adicionar campos apenas se existirem (evitar null)
+    $embed['fields'][] = [
+        'name' => '🆔 UUID',
+        'value' => "`{$dadosVisitante['uuid']}`",
+        'inline' => false
+    ];
+    
+    if (!empty($dadosVisitante['cidade']) && !empty($dadosVisitante['estado']) && !empty($dadosVisitante['pais'])) {
+        $embed['fields'][] = [
+            'name' => '📍 Localização',
+            'value' => "{$dadosVisitante['cidade']}, {$dadosVisitante['estado']}, {$dadosVisitante['pais']}",
+            'inline' => true
+        ];
+    }
+    
+    if (!empty($dadosVisitante['ip']) && !empty($dadosVisitante['provedor'])) {
+        $embed['fields'][] = [
+            'name' => '📡 IP e Provedor',
+            'value' => "`{$dadosVisitante['ip']}`\n{$dadosVisitante['provedor']}",
+            'inline' => true
+        ];
+    }
+    
+    if (!empty($dadosVisitante['marca_dispositivo']) && !empty($dadosVisitante['sistema_operacional'])) {
+        $embed['fields'][] = [
+            'name' => '💻 Dispositivo',
+            'value' => "{$dadosVisitante['marca_dispositivo']} ({$dadosVisitante['sistema_operacional']})",
+            'inline' => true
+        ];
+    }
+    
+    if (!empty($dadosVisitante['web_browser'])) {
+        $embed['fields'][] = [
+            'name' => '🌐 Navegador',
+            'value' => $dadosVisitante['web_browser'],
+            'inline' => true
+        ];
+    }
+    
+    if (isset($dadosVisitante['duracao_sessao'])) {
+        $embed['fields'][] = [
+            'name' => '⏱️ Duração Sessão',
+            'value' => "{$dadosVisitante['duracao_sessao']} segundos",
+            'inline' => true
+        ];
+    }
+    
+    if (isset($dadosVisitante['referrer'])) {
+        $embed['fields'][] = [
+            'name' => '🔗 Origem',
+            'value' => !empty($dadosVisitante['referrer']) ? "[Link]({$dadosVisitante['referrer']})" : 'Direto',
+            'inline' => true
+        ];
+    }
+    
+    $embed['footer'] = [
+        'text' => "Registrado em: $dataHora"
+    ];
+    
     // Adicionar UTMs se existirem
-    $utmFields = [];
     foreach (['source', 'medium', 'campaign', 'content', 'term'] as $utm) {
         if (!empty($dadosVisitante["utm_$utm"])) {
-            $utmFields[] = [
+            $embed['fields'][] = [
                 'name' => "UTM $utm",
                 'value' => $dadosVisitante["utm_$utm"],
                 'inline' => true
@@ -161,99 +192,119 @@ function enviarNotificacaoDiscordVisitante($dadosVisitante) {
         }
     }
     
-    if (!empty($utmFields)) {
-        $embed['fields'] = array_merge($embed['fields'], $utmFields);
-    }
-
+    // Verificação do payload
+    registrarEvento("Campos do embed: " . count($embed['fields']), "INFO");
+    
+    // Montagem correta do payload
     $mensagem = [
         'username' => 'Site Agência m2a',
         'avatar_url' => 'https://agenciam2a.com.br/assets/img/logo-icon.png',
         'embeds' => [$embed]
     ];
-
-    $ch = curl_init();
-    curl_setopt_array($ch, [
-        CURLOPT_URL => DISCORD_WEBHOOK_URL,
-        CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYHOST => 2,
-        CURLOPT_SSL_VERIFYPEER => true,
-        CURLOPT_POSTFIELDS => json_encode($mensagem, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-        CURLOPT_USERAGENT => 'AgenciaM2A/1.0'
-    ]);
     
-    $resposta = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-// Verificação detalhada
-    if (curl_errno($ch)) {
-        registrarEvento('Erro cURL: ' . curl_error($ch), 'ERRO');
-    } elseif ($httpCode !== 204) {
-        registrarEvento("Resposta Discord: HTTP $httpCode - $resposta", "ERRO");
+    // Log do payload para debug
+    registrarEvento("Payload JSON: " . substr(json_encode($mensagem), 0, 200) . "...", "DEBUG");
+    
+    try {
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => DISCORD_WEBHOOK_VISITANTES,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_OPTIONS => CURLSSLOPT_NO_REVOKE,
+            CURLOPT_POSTFIELDS => json_encode($mensagem, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            CURLOPT_USERAGENT => 'AgenciaM2A/1.0',
+            CURLOPT_TIMEOUT => 10
+        ]);
+        
+        $resposta = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        registrarEvento("Resposta Discord: HTTP $httpCode - Corpo: " . substr($resposta, 0, 100), $httpCode === 204 ? "INFO" : "ERRO");
+        
+        curl_close($ch);
+        return $httpCode === 204;
+        
+    } catch (Exception $e) {
+        registrarEvento("Exceção ao enviar para Discord: " . $e->getMessage(), "ERRO");
+        return false;
     }
-    
-    curl_close($ch);
 }
 
-// Conectar ao banco de dados
 try {
+    // Conectar ao banco de dados
     $conexao = new mysqli(DB_SERVIDOR, DB_USUARIO, DB_SENHA, DB_NOME);
-    
-    // Verificar conexão
     if ($conexao->connect_error) {
-        registrarEvento("Falha na conexão com o banco de dados: " . $conexao->connect_error, "ERRO");
-        respostaJson(['erro' => 'Erro ao conectar ao banco de dados'], 500);
+        throw new Exception("Erro na conexão: " . $conexao->connect_error);
     }
-    
-    // Definir caracteres como UTF-8
+
     $conexao->set_charset("utf8mb4");
+    registrarEvento("Conexão com banco estabelecida", "INFO");
     
-    // Preparar consulta SQL segura
+    // ON DUPLICATE KEY UPDATE - atualiza se o UUID já existir
     $sql = "INSERT INTO visitantes_website (
-                uuid, novo_visitante, ip, provedor,
-                cidade, estado, pais,
+                uuid, novo_visitante, ip, provedor, cidade, estado, pais,
                 web_browser, sistema_operacional, marca_dispositivo, movel,
-                dimensao_tela, referrer,
-                utm_source, utm_medium, utm_campaign, utm_content, utm_term,
-                total_cliques, cliques_elementos_clicaveis, duracao_sessao
+                dimensao_tela, referrer, utm_source, utm_medium, utm_campaign,
+                utm_content, utm_term, total_cliques, cliques_elementos_clicaveis, duracao_sessao
             ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?,
-                ?, ?, ?,
-                ?, ?, ?, ?,
-                ?, ?,
                 ?, ?, ?, ?, ?,
-                ?, ?, ?
-            )";
-    
-    $parametros = [
+                ?, ?, ?, ?, ?
+            )
+            ON DUPLICATE KEY UPDATE
+                ip = VALUES(ip),
+                provedor = VALUES(provedor),
+                cidade = VALUES(cidade),
+                estado = VALUES(estado),
+                pais = VALUES(pais),
+                web_browser = VALUES(web_browser),
+                sistema_operacional = VALUES(sistema_operacional),
+                marca_dispositivo = VALUES(marca_dispositivo),
+                movel = VALUES(movel),
+                dimensao_tela = VALUES(dimensao_tela),
+                referrer = VALUES(referrer),
+                utm_source = VALUES(utm_source),
+                utm_medium = VALUES(utm_medium),
+                utm_campaign = VALUES(utm_campaign),
+                utm_content = VALUES(utm_content),
+                utm_term = VALUES(utm_term),
+                total_cliques = total_cliques + VALUES(total_cliques),
+                cliques_elementos_clicaveis = cliques_elementos_clicaveis + VALUES(cliques_elementos_clicaveis),
+                duracao_sessao = duracao_sessao + VALUES(duracao_sessao)";
+
+    $stmt = $conexao->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Erro na preparação da query: " . $conexao->error);
+    }
+
+    $stmt->bind_param(
+        'sisssssssiissssssiiii', 
         $uuid, $novoVisitante, $ipCliente, $infoGeo['provedor'],
         $infoGeo['cidade'], $infoGeo['estado'], $infoGeo['pais'],
-        $navegador, $sistemaOperacional, $marcaDispositivo, $ehMovel,
-        $dimensaoTela, $referrer,
+        $navegador, $sistemaOperacional, $marcaDispositivo, $movel,
+        $dimensaoTela, $referrer, 
         $utmSource, $utmMedium, $utmCampaign, $utmContent, $utmTerm,
         $totalCliques, $cliquesElementosClicaveis, $duracaoSessao
-    ];
-    
-    $tipos = 'sississsssiisssssiiii'; // Tipos de parâmetros para bind_param
-    
-    $stmt = prepararDeclaracao($conexao, $sql, $tipos, $parametros);
-    
-    // Executar a consulta
-    if (!$stmt || !$stmt->execute()) {
-        registrarEvento("Erro ao inserir dados de visitante: " . ($stmt ? $stmt->error : $conexao->error), "ERRO");
-        respostaJson(['erro' => 'Erro ao salvar os dados do visitante'], 500);
+    );
+
+    if (!$stmt->execute()) {
+        throw new Exception("Erro na execução: " . $stmt->error);
     }
-    
-    // Obter o ID gerado
+
     $idVisitante = $stmt->insert_id;
-    
-    // Fechar conexões
     $stmt->close();
     $conexao->close();
-    
-    // Chama função para enviar ao Discord
-    if ($idVisitante) {
+
+    // IMPORTANTE: Enviar notificação Discord ANTES da resposta JSON
+    if ($idVisitante && $novoVisitante) {
         $dadosParaDiscord = [
             'uuid' => $uuid,
             'ip' => $ipCliente,
@@ -273,21 +324,19 @@ try {
             'utm_term' => $utmTerm
         ];
         
-        try {
-            enviarNotificacaoDiscordVisitante($dadosParaDiscord);
-        } catch (Exception $e) {
-            registrarEvento("Erro ao enviar para Discord: " . $e->getMessage(), "ERRO");
-        }
+        $envioDiscord = enviarNotificacaoDiscordVisitante($dadosParaDiscord);
+        registrarEvento("Envio Discord: " . ($envioDiscord ? "Sucesso" : "Falha"), "INFO");
     }
 
-    // Retornar resposta de sucesso
+    // Resposta de sucesso
     respostaJson([
-        'sucesso' => true, 
-        'mensagem' => 'Dados do visitante registrados com sucesso',
-        'visitante_id' => $idVisitante
+        'sucesso' => true,
+        'mensagem' => 'Visitante registrado com sucesso',
+        'visitante_id' => $idVisitante,
+        'novo_visitante' => $novoVisitante
     ]);
-    
+
 } catch (Exception $e) {
-    registrarEvento("Exceção ao processar dados de visitante: " . $e->getMessage(), "ERRO");
-    respostaJson(['erro' => 'Ocorreu um erro ao processar a requisição'], 500);
+    registrarEvento("Erro no registro de visitante: " . $e->getMessage(), "ERRO");
+    respostaJson(['erro' => 'Erro ao registrar visitante', 'detalhes' => $e->getMessage()], 500);
 }

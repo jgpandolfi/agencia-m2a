@@ -308,7 +308,7 @@ const GerenciadorTracking = (function() {
         
         if (consentimentoExistente) {
             carregarFerramentas();
-            // Adicione esta linha
+            ativarConsentimento();
             RastreadorVisitantes.iniciar();
         }
     } catch (erro) {
@@ -344,27 +344,33 @@ const RastreadorVisitantes = (function() {
   let intervaloDuracao;
 
   /**
-   * Gera ou recupera UUID do visitante
+   * Gera ou recupera um identificador único para o visitante
    */
   function gerarOuRecuperarUUID() {
+      // Tentar obter UUID existente
       let uuid = localStorage.getItem('agencia_m2a_visitante_uuid');
       
+      // Se não existir, gerar um novo
       if (!uuid) {
-          uuid = crypto.randomUUID() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-              const r = Math.random() * 16 | 0;
-              const v = c === 'x' ? r : (r & 0x3 | 0x8);
-              return v.toString(16);
-          });
+          uuid = self.crypto.randomUUID ? self.crypto.randomUUID() : 
+                'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+          
           localStorage.setItem('agencia_m2a_visitante_uuid', uuid);
           novoVisitante = true;
       } else {
+          // Verificar se esse UUID já existe no banco de dados
           verificarSeEhNovoVisitante(uuid);
       }
+      
       return uuid;
   }
-
+  
   /**
-   * Verifica na API se o visitante já existe
+   * Verifica na API se o visitante já existe no banco de dados
    */
   async function verificarSeEhNovoVisitante(uuid) {
       try {
@@ -375,56 +381,113 @@ const RastreadorVisitantes = (function() {
           }
       } catch (erro) {
           console.error('Erro ao verificar visitante:', erro);
+          // Em caso de erro, assume que é um novo visitante
           novoVisitante = true;
       }
   }
 
   /**
-   * Coleta dados do dispositivo e navegação
+   * Detecta informações sobre navegador, SO e dispositivo
+   */
+  function detectarInfoNavegador() {
+      const userAgent = navigator.userAgent;
+      let navegador = 'Desconhecido';
+      let sistemaOperacional = 'Desconhecido';
+      let marcaDispositivo = 'Desconhecido';
+      let movel = /Mobile|Android|iPhone|iPad|iPod|Windows Phone/i.test(userAgent) ? 1 : 0;
+
+      // Detectar navegador
+      if (userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Edg') === -1) navegador = 'Chrome';
+      else if (userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1) navegador = 'Safari';
+      else if (userAgent.indexOf('Firefox') > -1) navegador = 'Firefox';
+      else if (userAgent.indexOf('MSIE') > -1 || userAgent.indexOf('Trident/') > -1) navegador = 'Internet Explorer';
+      else if (userAgent.indexOf('Edg') > -1) navegador = 'Edge';
+      else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) navegador = 'Opera';
+
+      // Detectar sistema operacional
+      if (userAgent.indexOf('Windows') > -1) sistemaOperacional = 'Windows';
+      else if (userAgent.indexOf('Mac') > -1) sistemaOperacional = 'MacOS';
+      else if (userAgent.indexOf('Linux') > -1) sistemaOperacional = 'Linux';
+      else if (userAgent.indexOf('Android') > -1) sistemaOperacional = 'Android';
+      else if (userAgent.indexOf('iPhone') > -1 || userAgent.indexOf('iPad') > -1 || userAgent.indexOf('iPod') > -1) sistemaOperacional = 'iOS';
+
+      // Detectar marca do dispositivo
+      if (userAgent.indexOf('iPhone') > -1 || userAgent.indexOf('iPad') > -1 || userAgent.indexOf('iPod') > -1) marcaDispositivo = 'Apple';
+      else if (userAgent.indexOf('Samsung') > -1) marcaDispositivo = 'Samsung';
+      else if (userAgent.indexOf('Huawei') > -1) marcaDispositivo = 'Huawei';
+      else if (userAgent.indexOf('Xiaomi') > -1) marcaDispositivo = 'Xiaomi';
+      else if (userAgent.indexOf('Motorola') > -1) marcaDispositivo = 'Motorola';
+      else if (userAgent.indexOf('LG') > -1) marcaDispositivo = 'LG';
+      else if (userAgent.indexOf('Android') > -1) marcaDispositivo = 'Android';
+      else if (!movel) marcaDispositivo = 'Desktop';
+
+      return {
+          navegador,
+          sistema_operacional: sistemaOperacional,
+          marca_dispositivo: marcaDispositivo,
+          movel
+      };
+  }
+
+  /**
+   * Coleta os parâmetros UTM da URL
+   */
+  function obterParametrosUTM() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return {
+          utm_source: urlParams.get('utm_source') || '',
+          utm_medium: urlParams.get('utm_medium') || '',
+          utm_campaign: urlParams.get('utm_campaign') || '',
+          utm_content: urlParams.get('utm_content') || '',
+          utm_term: urlParams.get('utm_term') || ''
+      };
+  }
+
+  /**
+   * Coleta dados sobre a sessão e o dispositivo
    */
   function coletarDadosSessao() {
       return {
           dimensao_tela: `${screen.width}x${screen.height}`,
           referrer: document.referrer || '',
-          utm_source: new URLSearchParams(window.location.search).get('utm_source') || '',
-          utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || '',
-          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',
-          utm_content: new URLSearchParams(window.location.search).get('utm_content') || '',
-          utm_term: new URLSearchParams(window.location.search).get('utm_term') || ''
+          ...obterParametrosUTM(),
+          ...detectarInfoNavegador()
       };
   }
 
   /**
-   * Rastreia cliques e elementos interativos
+   * Inicia o rastreamento dos cliques
    */
   function rastrearCliques() {
-      document.addEventListener('click', (e) => {
+      document.addEventListener('click', function(evento) {
           totalCliques++;
           
           // Verifica se o elemento ou seus pais são clicáveis
           const elementosClicaveis = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'];
-          let elemento = e.target;
-          let ehClicavel = false;
+          let elemento = evento.target;
           
           while (elemento && elemento !== document.body) {
               if (elementosClicaveis.includes(elemento.tagName) || 
+                  elemento.hasAttribute('role') || 
                   getComputedStyle(elemento).cursor === 'pointer') {
-                  ehClicavel = true;
+                  cliquesElementosClicaveis++;
                   break;
               }
               elemento = elemento.parentElement;
           }
-          
-          if (ehClicavel) cliquesElementosClicaveis++;
       }, true);
   }
 
   /**
-   * Envia dados para a API
+   * Envia os dados para a API
    */
   async function enviarDados() {
+      if (!rastreamentoIniciado) return;
+      
+      // Atualiza a duração da sessão
       duracaoSessao = Math.floor((Date.now() - inicioPagina) / 1000);
       
+      // Prepara os dados para envio
       const dados = {
           uuid: visitanteUUID,
           novo_visitante: novoVisitante,
@@ -433,53 +496,99 @@ const RastreadorVisitantes = (function() {
           duracao_sessao: duracaoSessao,
           ...coletarDadosSessao()
       };
-
+      
       try {
-          await fetch(URL_API, {
+          const resposta = await fetch(URL_API, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(dados)
           });
-          novoVisitante = false;
+          
+          if (resposta.ok) {
+              // Se o envio foi bem-sucedido, marca como não sendo mais novo visitante
+              novoVisitante = false;
+          }
       } catch (erro) {
-          console.error('Erro ao enviar dados:', erro);
+          console.error('Erro ao enviar dados de rastreamento:', erro);
       }
   }
 
   /**
-   * Configura eventos de finalização de sessão
+   * Configura os eventos da sessão (antes de fechar a página, etc.)
    */
   function configurarEventosSessao() {
-      window.addEventListener('beforeunload', () => {
+      // Enviar dados antes do usuário sair da página
+      window.addEventListener('beforeunload', function() {
+          // Usa sendBeacon para envio assíncrono que continua mesmo quando a página está fechando
           duracaoSessao = Math.floor((Date.now() - inicioPagina) / 1000);
-          navigator.sendBeacon(URL_API, JSON.stringify({
+          
+          const dados = {
               uuid: visitanteUUID,
+              novo_visitante: novoVisitante,
+              total_cliques: totalCliques,
+              cliques_elementos_clicaveis: cliquesElementosClicaveis,
               duracao_sessao: duracaoSessao,
               ...coletarDadosSessao()
-          }));
+          };
+          
+          if (navigator.sendBeacon) {
+              navigator.sendBeacon(URL_API, JSON.stringify(dados));
+          }
+      });
+      
+      // Manter rastreamento de duração mesmo quando a guia estiver em segundo plano
+      document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'hidden') {
+              // Usuário saiu da página, enviar dados atuais
+              enviarDados();
+          }
       });
   }
 
   /**
-   * Inicia o rastreamento
+   * Inicia o rastreamento de visitantes
    */
   function iniciar() {
       if (rastreamentoIniciado) return;
       
+      // Gera ou recupera o UUID do visitante
       visitanteUUID = gerarOuRecuperarUUID();
+      
+      // Inicia o rastreamento de cliques
       rastrearCliques();
+      
+      // Configura eventos da sessão
       configurarEventosSessao();
       
-      // Envio inicial
+      // Envia dados iniciais
       enviarDados();
       
-      // Envio periódico
+      // Configura envio periódico de dados
       intervaloDuracao = setInterval(enviarDados, INTERVALO_ENVIO);
+      
       rastreamentoIniciado = true;
   }
 
+  /**
+   * Para o rastreamento de visitantes
+   */
+  function parar() {
+      if (!rastreamentoIniciado) return;
+      
+      // Limpa o intervalo
+      clearInterval(intervaloDuracao);
+      
+      // Envia dados finais
+      enviarDados();
+      
+      rastreamentoIniciado = false;
+  }
+
   // Interface pública
-  return { iniciar };
+  return {
+      iniciar,
+      parar
+  };
 })();
 
 /**

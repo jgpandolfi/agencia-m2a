@@ -119,6 +119,166 @@ if (!empty($utmSource) || !empty($utmMedium) || !empty($utmCampaign)) {
     registrarEvento("Dados UTM recebidos - Source: $utmSource, Medium: $utmMedium, Campaign: $utmCampaign", "INFO");
 }
 
+/**
+ * Envia notificação para o Discord via webhook quando um novo lead é recebido
+ * 
+ * @param array $dadosLead Dados do lead a serem enviados
+ * @return bool Verdadeiro se o envio for bem-sucedido
+ */
+function enviarNotificacaoDiscordLead($dadosLead) {
+    registrarEvento("Tentando enviar notificação de lead para Discord", "INFO");
+    
+    // Verificar se todos os dados necessários existem para evitar erros
+    if (empty($dadosLead['nome']) || empty($dadosLead['email'])) {
+        registrarEvento("Dados insuficientes para notificação Discord", "ERRO");
+        return false;
+    }
+    
+    $corMagenta = 14032980; // #D62454 em decimal
+    $dataHora = date('d/m/Y H:i:s');
+    
+    // Construção corrigida do embed
+    $embed = [
+        'title' => '📋 Novo Lead Recebido!',
+        'color' => $corMagenta,
+        'description' => "Um novo lead acabou de preencher o formulário de contato no site da Agência m2a.",
+        'fields' => []
+    ];
+    
+    // Adicionar campos apenas se existirem (evitar null)
+    $embed['fields'][] = [
+        'name' => '👤 Nome',
+        'value' => $dadosLead['nome'],
+        'inline' => true
+    ];
+    
+    $embed['fields'][] = [
+        'name' => '📧 E-mail',
+        'value' => $dadosLead['email'],
+        'inline' => true
+    ];
+    
+    if (!empty($dadosLead['telefone'])) {
+        $embed['fields'][] = [
+            'name' => '📱 Telefone',
+            'value' => $dadosLead['telefone'],
+            'inline' => true
+        ];
+    }
+    
+    if (!empty($dadosLead['empresa'])) {
+        $embed['fields'][] = [
+            'name' => '🏢 Empresa',
+            'value' => $dadosLead['empresa'],
+            'inline' => true
+        ];
+    } else {
+        $embed['fields'][] = [
+            'name' => '🏢 Empresa',
+            'value' => 'Não informada',
+            'inline' => true
+        ];
+    }
+    
+    // Adicionar serviços de interesse se existirem
+    if (!empty($dadosLead['servicos'])) {
+        $embed['fields'][] = [
+            'name' => '🔍 Serviços de Interesse',
+            'value' => $dadosLead['servicos'],
+            'inline' => false
+        ];
+    }
+    
+    // Adicionar mensagem
+    if (!empty($dadosLead['mensagem'])) {
+        $embed['fields'][] = [
+            'name' => '💬 Mensagem',
+            'value' => $dadosLead['mensagem'],
+            'inline' => false
+        ];
+    }
+    
+    // Adicionar dados de rastreamento
+    if (!empty($dadosLead['ip'])) {
+        $rastreamento = "IP: {$dadosLead['ip']}\n";
+        $rastreamento .= "Localização: {$dadosLead['cidade']}, {$dadosLead['estado']}, {$dadosLead['pais']}\n";
+        $rastreamento .= "Navegador: {$dadosLead['web_browser']}\n";
+        $rastreamento .= "Sistema: {$dadosLead['sistema_operacional']}\n";
+        $rastreamento .= "Dispositivo: {$dadosLead['marca_dispositivo']}";
+        
+        $embed['fields'][] = [
+            'name' => '📍 Dados de Rastreamento',
+            'value' => $rastreamento,
+            'inline' => false
+        ];
+    }
+    
+    // Adicionar dados UTM se existirem
+    $utmInfo = "";
+    foreach (['source', 'medium', 'campaign', 'content', 'term'] as $utm) {
+        if (!empty($dadosLead["utm_$utm"])) {
+            $utmInfo .= ucfirst($utm) . ": {$dadosLead["utm_$utm"]}\n";
+        }
+    }
+    
+    if (!empty($utmInfo)) {
+        $embed['fields'][] = [
+            'name' => '🔗 Dados UTM',
+            'value' => $utmInfo,
+            'inline' => false
+        ];
+    }
+    
+    $embed['footer'] = [
+        'text' => "Recebido em: $dataHora"
+    ];
+    
+    // Verificação do payload
+    registrarEvento("Campos do embed: " . count($embed['fields']), "INFO");
+    
+    // Montagem correta do payload
+    $mensagem = [
+        'username' => 'Site Agência m2a',
+        'avatar_url' => 'https://agenciam2a.com.br/assets/img/logo-icon.png',
+        'content' => '🔔 **NOVO LEAD RECEBIDO!**',
+        'embeds' => [$embed]
+    ];
+    
+    // Log do payload para debug
+    registrarEvento("Payload JSON: " . substr(json_encode($mensagem), 0, 200) . "...", "DEBUG");
+    
+    try {
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => DISCORD_WEBHOOK_LEADS,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_OPTIONS => CURLSSLOPT_NO_REVOKE,
+            CURLOPT_POSTFIELDS => json_encode($mensagem, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            CURLOPT_USERAGENT => 'AgenciaM2A/1.0',
+            CURLOPT_TIMEOUT => 10
+        ]);
+        
+        $resposta = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        registrarEvento("Resposta Discord: HTTP $httpCode - Corpo: " . substr($resposta, 0, 100), $httpCode === 204 ? "INFO" : "ERRO");
+        
+        curl_close($ch);
+        return $httpCode === 204;
+        
+    } catch (Exception $e) {
+        registrarEvento("Exceção ao enviar para Discord: " . $e->getMessage(), "ERRO");
+        return false;
+    }
+}
+
 // Conectar ao banco de dados
 try {
     $conexao = new mysqli(DB_SERVIDOR, DB_USUARIO, DB_SENHA, DB_NOME);
@@ -189,7 +349,7 @@ try {
     
     // Enviar notificação para o Discord (não interrompe o fluxo se falhar)
     try {
-        enviarNotificacaoDiscord($dadosParaDiscord);
+        enviarNotificacaoDiscordLead($dadosParaDiscord);
     } catch (Exception $e) {
         registrarEvento("Exceção ao enviar notificação para o Discord: " . $e->getMessage(), "ERRO");
         // Continuamos mesmo se houver erro no Discord

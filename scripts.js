@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarPreloader();
   GerenciadorTracking.inicializar();
   inicializarNavegacao();
+  GerenciadorEfeitoDigitacao.inicializar();
   inicializarCursorPersonalizado();
   inicializarBotaoTopo();
   inicializarBotaoWhatsApp();
@@ -653,6 +654,115 @@ const inicializarNavegacao = () => {
   
   window.addEventListener('scroll', destacarMenuAtivo);
 };
+
+/**
+ * Gerencia o efeito de digitação para o título principal
+ */
+const GerenciadorEfeitoDigitacao = (function() {
+  // Variáveis privadas
+  let tituloFixo;
+  let tituloDinamico;
+  let cursorDigitacao;
+  
+  // Lista de finais de frase
+  const finaisFrase = [
+      'a sua empresa!',
+      'o seu negócio!',
+      'a sua marca!',
+      'as suas redes sociais!',
+      'o seu evento!',
+      'sua presença digital!',
+      'seus resultados online!',
+      'suas vendas!',
+      'sua transformação digital!'
+  ];
+  
+  // Controle de estado
+  let fraseAtual = 0;
+  let posicaoAtual = 0;
+  let estaApagando = false;
+  let estaPausado = false;
+  
+  // Configurações de velocidade (em milissegundos)
+  const VELOCIDADE_DIGITACAO = 100;
+  const VELOCIDADE_APAGAR = 50;
+  const PAUSA_ENTRE_FRASES = 2000;
+  const PAUSA_ANTES_APAGAR = 50;
+  
+  /**
+   * Efeito de digitação recursivo
+   * @private
+   */
+  function executarEfeitoDigitacao() {
+      // Se estiver pausado, aguardar
+      if (estaPausado) {
+          setTimeout(executarEfeitoDigitacao, PAUSA_ENTRE_FRASES);
+          estaPausado = false;
+          return;
+      }
+      
+      // Frase atual completa
+      const fraseCompleta = finaisFrase[fraseAtual];
+      
+      // Lógica para apagar o texto
+      if (estaApagando) {
+          if (posicaoAtual > 0) {
+              posicaoAtual--;
+              tituloDinamico.textContent = fraseCompleta.substring(0, posicaoAtual);
+              setTimeout(executarEfeitoDigitacao, VELOCIDADE_APAGAR);
+          } else {
+              // Mudar para a próxima frase
+              estaApagando = false;
+              fraseAtual = (fraseAtual + 1) % finaisFrase.length;
+              setTimeout(executarEfeitoDigitacao, VELOCIDADE_DIGITACAO);
+          }
+      } else {
+          // Lógica para digitar o texto
+          if (posicaoAtual < fraseCompleta.length) {
+              posicaoAtual++;
+              tituloDinamico.textContent = fraseCompleta.substring(0, posicaoAtual);
+              setTimeout(executarEfeitoDigitacao, VELOCIDADE_DIGITACAO);
+          } else {
+              // Pausa antes de começar a apagar
+              estaPausado = true;
+              setTimeout(() => {
+                  estaApagando = true;
+                  executarEfeitoDigitacao();
+              }, PAUSA_ANTES_APAGAR);
+          }
+      }
+  }
+  
+  /**
+   * Inicializa o efeito de digitação
+   * @public
+   */
+  function inicializar() {
+      tituloFixo = document.querySelector('.titulo-fixo');
+      tituloDinamico = document.querySelector('.titulo-dinamico');
+      cursorDigitacao = document.querySelector('.cursor-digitacao');
+      
+      if (!tituloFixo || !tituloDinamico || !cursorDigitacao) {
+          console.error('Elementos do título não encontrados');
+          return;
+      }
+      
+      // Definir o texto inicial
+      posicaoAtual = finaisFrase[0].length;
+      tituloDinamico.textContent = finaisFrase[0];
+      
+      // Iniciar efeito após um pequeno delay
+      setTimeout(() => {
+          estaPausado = true;
+          executarEfeitoDigitacao();
+      }, 100);
+  }
+  
+  // Interface pública
+  return {
+      inicializar: inicializar
+  };
+})();
 
 /**
  * Controla o botão "Voltar ao Topo"

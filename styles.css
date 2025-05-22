@@ -401,12 +401,37 @@
     line-height: 1.2;
     color: var(--cor-branco-gelo);
   }
-  
+
+  /* Efeito de digitação no título principal */
+  .titulo-fixo {
+    display: inline;
+  }
+
+  .titulo-dinamico {
+    display: inline;
+    color: var(--cor-branco-gelo);
+  }
+
+  .cursor-digitacao {
+    display: inline-block;
+    width: 3px;
+    height: 0.9em;
+    background-color: var(--cor-destaque);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: piscar 0.8s infinite;
+  }
+
   .subtitulo {
     font-size: 2.2rem;
     color: var(--cor-branco-gelo);
     opacity: 0.9;
     margin-bottom: 4rem;
+  }
+
+  @keyframes piscar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   /* ----------------- 6. Quem Somos ----------------- */
@@ -1899,7 +1924,7 @@ input, textarea {
 
 /* Reduzir movimentos para usuários que preferem menos animações */
 @media (prefers-reduced-motion: reduce) {
-  .banner-principal::before, .banner-principal::after, .conteudo-modal, #legenda-modal {
+  .banner-principal::before, .banner-principal::after, .cursor-digitacao, .conteudo-modal, #legenda-modal {
     animation: none;
   }
   .carrossel-clientes {
